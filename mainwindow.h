@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 
+class NoteWebView;
+
 namespace Ui {
 class MainWindow;
 }
@@ -10,13 +12,16 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-    
+
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QWidget* parent = 0);
     ~MainWindow();
-    
+
 private:
-    Ui::MainWindow *ui;
+    void setNewNote();
+
+    Ui::MainWindow* ui;
+    NoteWebView*    webView;
 };
 
 #endif // MAINWINDOW_H
