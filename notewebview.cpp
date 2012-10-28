@@ -1,6 +1,6 @@
 #include "notewebview.h"
 
-NoteWebView::NoteWebView(QWidget *parent) :
+NoteWebView::NoteWebView(QWidget* parent) :
     QWebView(parent)
 {
 }

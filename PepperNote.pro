@@ -27,4 +27,5 @@ RESOURCES += \
 
 OTHER_FILES += \
     res/editor/html/new_note.html \
-    res/editor/css/note.css
+    res/editor/css/note.css \
+    res/editor/javascripts/note.js

@@ -1,3 +1,6 @@
 body {
-    background-color:  #f0f0b0;
+    background-color:   #f0f0b0;
+
+    font-family:        "DejaVu Sans", "Trebuchet MS", Verdana, Arial, sans-serif;
+    font-size:          0.8em;
 }

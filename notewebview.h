@@ -7,7 +7,7 @@ class NoteWebView : public QWebView
 {
     Q_OBJECT
 public:
-    explicit NoteWebView(QWidget *parent = 0);
+    explicit NoteWebView(QWidget* parent = 0);
 
 signals:
 
