@@ -16,11 +16,15 @@ TEMPLATE = app
 SOURCES += main.cpp \
         mainwindow.cpp \
         notewebview.cpp \
-    notebookpage.cpp
+    notebookpage.cpp \
+    notebook.cpp \
+    notebookmanager.cpp
 
 HEADERS  += mainwindow.h \
         notewebview.h \
-    notebookpage.h
+    notebookpage.h \
+    notebook.h \
+    notebookmanager.h
 
 FORMS    += mainwindow.ui
 

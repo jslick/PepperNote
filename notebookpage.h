@@ -11,6 +11,8 @@ public:
 
     QString getHtml();
 
+    void saveContent(const QString& html);
+
 signals:
 
 public slots:

@@ -16,3 +16,8 @@ QString NotebookPage::getHtml()
 
     return noteHtml;
 }
+
+void NotebookPage::saveContent(const QString& html)
+{
+    // TODO
+}

@@ -24,6 +24,7 @@ private slots:
 
 private:
     void showCurrentPage();
+    void savePage();
 
     NotebookPage* currentPage;
 

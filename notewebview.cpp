@@ -3,6 +3,8 @@
 
 #include <QTime>
 #include <QTimer>
+#include <QWebFrame>
+#include <QWebElement>
 #include <QDebug>
 
 #define DEFAULT_SAVE_TIMER_INTERVAL (5000)
@@ -45,7 +47,7 @@ void NoteWebView::checkSaveNote()
         this->elapsedSave.elapsed() > DEFAULT_SAVE_INTERVAL)
     {
         qDebug() << '[' << QTime::currentTime() << "] Saving note";
-        // TODO: save
+        this->savePage();
 
         this->elapsedSave.start();
         this->saveTimerInProgress = false;
@@ -64,4 +66,11 @@ void NoteWebView::showCurrentPage()
     // Implicit QString data sharing makes this efficient
     QString noteHtml = this->currentPage->getHtml();
     this->setHtml(noteHtml, QUrl("qrc:/editor/"));
+}
+
+void NoteWebView::savePage()
+{
+    QWebElement contentElement = this->page()->mainFrame()->findFirstElement("#note_content");
+    QString contentHtml = contentElement.toInnerXml();
+    this->currentPage->saveContent(contentHtml);
 }
