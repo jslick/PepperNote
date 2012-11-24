@@ -22,7 +22,8 @@ SOURCES += main.cpp \
         notebookformat.cpp \
         notebookmanager.cpp \
         notebookformatmanifest.cpp \
-        filenotebookformat.cpp
+        filenotebookformat.cpp \
+        qt-json/json.cpp
 
 HEADERS  += mainwindow.h \
         utility.h \
@@ -32,7 +33,8 @@ HEADERS  += mainwindow.h \
         notebookformat.h \
         notebookmanager.h \
         notebookformatmanifest.h \
-        filenotebookformat.h
+        filenotebookformat.h \
+        qt-json/json.h
 
 FORMS    += mainwindow.ui
 
