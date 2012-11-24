@@ -2,7 +2,8 @@
 #define NOTEBOOKFORMATMANIFEST_H
 
 #include <QObject>
-#include <QMultiMap>
+#include <QList>
+#include <QHash>
 
 class NotebookFormatManifest : public QObject
 {
@@ -10,22 +11,37 @@ class NotebookFormatManifest : public QObject
 public:
     explicit NotebookFormatManifest(QObject* parent = 0);
 
+    void parseJson(const QString& manifestJson);
+
+    QString serialize() const;
+
     QString getPageId(int sectionIndex, int pageIndex) const;
 
     bool containsPage(const QString& pageId) const;
 
     void addPage(const QString& sectionName, const QString& pageId);
 
-    QString serialize() const;
-
 signals:
 
 public slots:
 
 private:
-    QMultiMap<QString,QString> pages;   // section name <-> page id's
-    // TODO:  Change data structure for pages.  QMultiMap orders by key instead
-    //        of user-defined order.
+    typedef struct {
+        QString     id;
+        QString     name;
+    } Page;
+
+    typedef struct {
+        QString         name;
+        QList<Page*>    pages;
+    } Section;
+
+    Section& findOrCreateSection(const QString& sectionName);
+
+    QList<Page>             pages;
+    QList<Section>          sections;
+    QHash<QString,Section*> sectionIndex;   // section name <-> struct Section
+    QHash<QString,Page*>    pageIndex;      // page id <-> struct Page
 };
 
 #endif // NOTEBOOKFORMATMANIFEST_H

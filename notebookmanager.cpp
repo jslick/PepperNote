@@ -1,5 +1,6 @@
 #include "notebookmanager.h"
 #include "notebook.h"
+#include "notebookpage.h"
 #include "filenotebookformat.h"
 
 #include <QMutexLocker>
@@ -24,6 +25,7 @@ void NotebookManager::loadNotebook(const QString& filename)
 
     NotebookFormat* fileFormat = new FileNotebookFormat(loadFilename);
     Notebook* notebook = new Notebook(fileFormat);
+    fileFormat->load();
 
     emit notebookLoaded(notebook);
 }
@@ -31,6 +33,8 @@ void NotebookManager::loadNotebook(const QString& filename)
 void NotebookManager::createNotebook(NotebookFormat* fileFormat)
 {
     Notebook* notebook = new Notebook(fileFormat);
+    NotebookPage* page = new NotebookPage(*notebook);
+    notebook->addPage("General", page);
 
     emit notebookLoaded(notebook);
 }

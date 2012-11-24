@@ -2,12 +2,18 @@
 #include "utility.h"
 #include "notebook.h"
 
+#include <QUuid>
 #include <QFile>
 
 NotebookPage::NotebookPage(Notebook& parent, const QString& pageId) :
     QObject(&parent),
-    notebook(parent), pageId(pageId)
+    notebook(parent), pageId(pageId.isEmpty() ? QUuid::createUuid().toString().mid(1, 36) : pageId)
 {
+}
+
+bool NotebookPage::isPersisted() const
+{
+    return this->notebook.isPagePersisted(this->pageId);
 }
 
 QString NotebookPage::getId() const
@@ -17,9 +23,7 @@ QString NotebookPage::getId() const
 
 QString NotebookPage::getHtml()
 {
-    return this->pageId.isEmpty() ?
-           getFileUtf8(":/editor/html/new_note.html") :
-           this->notebook.getPageContents(this->pageId);
+    return this->notebook.getPageContents(this->pageId);
 }
 
 void NotebookPage::saveContent(const QString& html)

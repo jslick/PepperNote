@@ -14,6 +14,10 @@ public:
 
     void setNotebook(Notebook* notebook);
 
+    virtual void load() = 0;
+
+    virtual bool isPagePersisted(const QString& pageId) const = 0;
+
     virtual QString getPageContents(const QString& pageId) const = 0;
 
     virtual QString getPageId(int sectionIndex, int pageIndex) const = 0;

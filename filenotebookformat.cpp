@@ -12,6 +12,18 @@ FileNotebookFormat::FileNotebookFormat(const QString& filename, Notebook* parent
 {
 }
 
+void FileNotebookFormat::load()
+{
+    QString manifestJson = getFileUtf8(this->filename % "/manifest.json");
+    this->manifest.parseJson(manifestJson);
+}
+
+bool FileNotebookFormat::isPagePersisted(const QString& pageId) const
+{
+    QString pageFilename = this->getPageFilename(pageId);
+    return QFile::exists(pageFilename);
+}
+
 QString FileNotebookFormat::getPageId(int sectionIndex, int pageIndex) const
 {
     return this->manifest.getPageId(sectionIndex, pageIndex);
@@ -51,7 +63,7 @@ void FileNotebookFormat::savePage(NotebookPage& page, const QString& html)
 
     if (!this->manifest.containsPage(page.getId()))
     {
-        this->manifest.addPage("general", page.getId());
+        this->manifest.addPage("General", page.getId());
         this->saveManifest();
     }
 

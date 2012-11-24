@@ -24,6 +24,11 @@ Notebook::~Notebook()
         delete this->fileFormat;
 }
 
+bool Notebook::isPagePersisted(const QString& pageId) const
+{
+    return this->fileFormat->isPagePersisted(pageId);
+}
+
 NotebookPage* Notebook::getFirstPage()
 {
     NotebookPage* page = this->loadedPagesByIndex[0];
@@ -51,6 +56,14 @@ QString Notebook::getPageContents(const QString& pageId) const
     }
 
     return this->fileFormat->getPageContents(pageId);
+}
+
+void Notebook::addPage(const QString& sectionName, NotebookPage* page)
+{
+    // TODO:  Implement
+    // This is a temporary implementation
+    Q_UNUSED(sectionName);
+    this->loadedPagesByIndex[0] = page;
 }
 
 void Notebook::savePage(NotebookPage& page, const QString& html)

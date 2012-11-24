@@ -14,6 +14,10 @@ class FileNotebookFormat : public NotebookFormat
 public:
     explicit FileNotebookFormat(const QString& filename, Notebook* parent = 0);
 
+    virtual void load();
+
+    virtual bool isPagePersisted(const QString& pageId) const;
+
     virtual QString getPageId(int sectionIndex, int pageIndex) const;
 
     virtual QString getPageContents(const QString& pageId) const;

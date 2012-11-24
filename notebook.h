@@ -32,10 +32,14 @@ public:
 
     ~Notebook();
 
+    bool isPagePersisted(const QString& pageId) const;
+
     // Not yet thread-safe
     NotebookPage* getFirstPage();
 
     QString getPageContents(const QString& pageId) const;
+
+    void addPage(const QString& sectionName, NotebookPage* page);
 
     void savePage(NotebookPage& page, const QString& html);
 

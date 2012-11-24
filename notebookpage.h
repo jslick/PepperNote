@@ -11,6 +11,8 @@ class NotebookPage : public QObject
 public:
     explicit NotebookPage(Notebook& parent, const QString& pageId = "");
 
+    bool isPersisted() const;
+
     QString getId() const;
 
     QString getHtml();

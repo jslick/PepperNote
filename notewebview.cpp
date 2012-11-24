@@ -63,7 +63,9 @@ void NoteWebView::setNoteContent()
     CHECK_POINTER_GUI(this->currentPage, "Could not load notebook page");
 
     // TODO:  Make getHtml asynchronous
-    QString noteHtml = this->currentPage->getHtml();
+    QString noteHtml = this->currentPage->isPersisted() ?
+                       this->currentPage->getHtml() :
+                       getFileUtf8(":/editor/html/new_note.html");
 
     QWebElement contentElement = this->page()->mainFrame()->findFirstElement("#note_content");
     contentElement.setInnerXml(noteHtml);
