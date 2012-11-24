@@ -6,6 +6,7 @@
 #include <QMutex>
 
 class Notebook;
+class NotebookFormat;
 
 class NotebookManager : public QObject
 {
@@ -17,7 +18,7 @@ public:
 
     void loadNotebook(const QString& filename);
 
-    void createNotebook();
+    void createNotebook(NotebookFormat* fileFormat);
 
 signals:
 

@@ -1,5 +1,7 @@
-#include "notebookpage.h"
 #include "notewebview.h"
+#include "utility.h"
+#include "notebook.h"       // NotebookException
+#include "notebookpage.h"
 
 #include <QTime>
 #include <QTimer>
@@ -15,20 +17,16 @@ NoteWebView::NoteWebView(QWidget* parent) :
     currentPage(0),
     saveTimerInProgress(false)
 {
+    this->elapsedSave.invalidate();
+
     connect(this->page(), SIGNAL(contentsChanged()),
             this, SLOT(noteChanged())
             );
 }
 
-void NoteWebView::setPage(NotebookPage* page)
+void NoteWebView::setPage(NotebookPage& page)
 {
-    // TODO:  validate param
-
-    // TODO:  How to deal with threading?  Maybe only event thread should be
-    //        using this function
-
-    this->currentPage = page;
-
+    this->currentPage = &page;
     this->showCurrentPage();
 }
 
@@ -58,19 +56,42 @@ void NoteWebView::checkSaveNote()
     }
 }
 
-void NoteWebView::showCurrentPage()
+void NoteWebView::setNoteContent()
 {
-    // TODO:  validate currentPage
+    disconnect(this, SLOT(setNoteContent()));
+
+    CHECK_POINTER_GUI(this->currentPage, "Could not load notebook page");
 
     // TODO:  Make getHtml asynchronous
-    // Implicit QString data sharing makes this efficient
     QString noteHtml = this->currentPage->getHtml();
-    this->setHtml(noteHtml, QUrl("qrc:/editor/"));
+
+    QWebElement contentElement = this->page()->mainFrame()->findFirstElement("#note_content");
+    contentElement.setInnerXml(noteHtml);
+}
+
+void NoteWebView::showCurrentPage()
+{
+    connect(this, SIGNAL(loadFinished(bool)),
+            SLOT(setNoteContent())
+            );
+
+    QString docHtml = getFileUtf8(":/editor/html/note.html");
+    this->setHtml(docHtml, QUrl("qrc:/editor/"));
+    // As a consequence of setHtml,
+    // setNoteContent() slot will show the note contents
 }
 
 void NoteWebView::savePage()
 {
     QWebElement contentElement = this->page()->mainFrame()->findFirstElement("#note_content");
     QString contentHtml = contentElement.toInnerXml();
-    this->currentPage->saveContent(contentHtml);
+    try
+    {
+        this->currentPage->saveContent(contentHtml);
+    }
+    catch (NotebookException& e)
+    {
+        // TODO:  put e message in message
+        showMessage(tr("Unable to save page"));
+    }
 }

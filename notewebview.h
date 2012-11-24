@@ -12,7 +12,7 @@ class NoteWebView : public QWebView
 public:
     explicit NoteWebView(QWidget* parent = 0);
 
-    void setPage(NotebookPage* page);
+    void setPage(NotebookPage& page);
 
 signals:
 
@@ -22,8 +22,12 @@ private slots:
     void noteChanged();
     void checkSaveNote();
 
+    void setNoteContent();
+
 private:
     void showCurrentPage();
+
+    // Event thread only
     void savePage();
 
     NotebookPage* currentPage;

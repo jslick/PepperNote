@@ -1,23 +1,28 @@
 #include "notebookpage.h"
+#include "utility.h"
+#include "notebook.h"
 
 #include <QFile>
 
-NotebookPage::NotebookPage(QObject* parent) :
-    QObject(parent)
+NotebookPage::NotebookPage(Notebook& parent, const QString& pageId) :
+    QObject(&parent),
+    notebook(parent), pageId(pageId)
 {
+}
+
+QString NotebookPage::getId() const
+{
+    return this->pageId;
 }
 
 QString NotebookPage::getHtml()
 {
-    QFile noteFile(":/editor/html/new_note.html");
-    noteFile.open(QIODevice::ReadOnly);
-    QString noteHtml = QString::fromUtf8(noteFile.readAll().constData());
-    noteFile.close();
-
-    return noteHtml;
+    return this->pageId.isEmpty() ?
+           getFileUtf8(":/editor/html/new_note.html") :
+           this->notebook.getPageContents(this->pageId);
 }
 
 void NotebookPage::saveContent(const QString& html)
 {
-    // TODO
+    this->notebook.savePage(*this, html);
 }

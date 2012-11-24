@@ -1,28 +1,29 @@
+#include "mainwindow.h"
+#include "ui_mainwindow.h"
+
+#include "utility.h"
 #include "notebookmanager.h"
 #include "notebook.h"
 #include "notebookpage.h"
+#include "filenotebookformat.h"
 #include "notewebview.h"
-
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
 
 #include <QStringBuilder>
 #include <QDir>
 #include <QSettings>
 #include <QDesktopServices>
-#include <QMessageBox>
 
 QDir MainWindow::getNotebooksDirectory()
 {
     QDir docsDir = QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation);
-    QDir notebooksDir = docsDir.relativeFilePath(QCoreApplication::applicationName() % " Notebooks");
+    QDir notebooksDir = QString(docsDir.absolutePath() % '/' % QCoreApplication::applicationName() % " Notebooks");
     return notebooksDir;
 }
 
 QString MainWindow::getDefaultNotebookFilename()
 {
     QDir notebooksDir = getNotebooksDirectory();
-    QString defaultNotebookFilename = notebooksDir.relativeFilePath("Personal." % Notebook::FILE_EXTENSION);
+    QString defaultNotebookFilename = notebooksDir.absolutePath() % "/Personal";
     return defaultNotebookFilename;
 }
 
@@ -46,6 +47,9 @@ MainWindow::MainWindow(QWidget* parent) :
 
 MainWindow::~MainWindow()
 {
+    while (this->loadedNotebooks.isEmpty() == false)
+        delete this->loadedNotebooks.takeLast();
+
     delete ui;
 }
 
@@ -59,9 +63,7 @@ void MainWindow::loadNotebooks()
         notebookFilename = settings.value("lastuse/notebook_filename").toString();
         if (!QFile::exists(notebookFilename))
         {
-            QMessageBox msgBox;
-            msgBox.setText("Could not find notebook with filename:  " % notebookFilename);
-            msgBox.exec();
+            showMessage(tr("Could not find notebook with filename:  ") % notebookFilename);
 
             notebookFilename = getDefaultNotebookFilename();
         }
@@ -73,16 +75,23 @@ void MainWindow::loadNotebooks()
 
     // Get filenames of all notebooks
     QDir notebooksDir = getNotebooksDirectory();
-    QStringList filters;
-    filters << "*." % Notebook::FILE_EXTENSION;
-    notebooksDir.setNameFilters(filters);
-    QFileInfoList notebookInfos = notebooksDir.entryInfoList(filters);
+    // TODO:  formats should register extensions, which would be filtered here.
+    QFileInfoList notebookInfos = notebooksDir.entryInfoList(/*filters*/);
+    int numNotebooks = 0;
 
     QStringList filenames;
     for (int i = 0; i < notebookInfos.size(); i++)
     {
         // Load the last-used notebook first; queue the rest
         QFileInfo fileInfo = notebookInfos.at(i);
+        if (fileInfo.fileName() == "." || fileInfo.fileName() == "..")
+            continue;
+        if (fileInfo.isDir() == false)
+            continue;
+        if (fileInfo.fileName().contains("noload"))
+            continue;
+        numNotebooks++;
+
         if (fileInfo.fileName() == notebookFilename)
             NotebookManager::instance.loadNotebook(fileInfo.absoluteFilePath());
         else
@@ -94,19 +103,23 @@ void MainWindow::loadNotebooks()
         NotebookManager::instance.loadNotebook(filenames.at(i));
     }
 
-    if (notebookInfos.isEmpty())
+    if (numNotebooks == 0)
     {
         // No notebooks found!  Create the default one.
-        NotebookManager::instance.createNotebook();
+        NotebookFormat* fileFormat = new FileNotebookFormat(notebookFilename);
+        NotebookManager::instance.createNotebook(fileFormat);
     }
 }
 
 void MainWindow::showLoadedNotebook(Notebook* notebook)
 {
-    // TODO:  validate param
+    CHECK_POINTER_GUI(notebook, tr("Could not load notebook"));
+
+    this->loadedNotebooks.append(notebook);
 
     NotebookPage* firstPage = notebook->getFirstPage();
-    // TODO:  validate
-    this->webView->setPage(firstPage);
+    CHECK_POINTER_GUI(notebook, tr("Could not load first page of notebook"));
+
+    this->webView->setPage(*firstPage);
     this->webView->focusWidget();
 }

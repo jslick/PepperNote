@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/editor/html" lang="en_US">
         <file alias="new_note.html">res/editor/html/new_note.html</file>
+        <file alias="note.html">res/editor/html/note.html</file>
     </qresource>
     <qresource prefix="/editor/css">
         <file alias="note.css">res/editor/css/note.css</file>

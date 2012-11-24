@@ -3,11 +3,15 @@
 
 #include <QObject>
 
+class Notebook;
+
 class NotebookPage : public QObject
 {
     Q_OBJECT
 public:
-    explicit NotebookPage(QObject* parent = 0);
+    explicit NotebookPage(Notebook& parent, const QString& pageId = "");
+
+    QString getId() const;
 
     QString getHtml();
 
@@ -17,6 +21,9 @@ signals:
 
 public slots:
 
+private:
+    Notebook&   notebook;
+    QString     pageId;
 };
 
 #endif // NOTEBOOKPAGE_H

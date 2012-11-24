@@ -31,6 +31,9 @@ private slots:
 private:
     Ui::MainWindow* ui;
     NoteWebView*    webView;
+
+    // Event thread only (at this time)
+    QList<Notebook*> loadedNotebooks;
 };
 
 #endif // MAINWINDOW_H
