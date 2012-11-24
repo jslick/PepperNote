@@ -123,5 +123,4 @@ void MainWindow::showLoadedNotebook(Notebook* notebook)
     CHECK_POINTER_GUI(firstPage, tr("Could not load first page of notebook"));
 
     this->webView->setPage(*firstPage);
-    this->webView->focusWidget();
 }

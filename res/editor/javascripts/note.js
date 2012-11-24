@@ -27,8 +27,6 @@ document.observe('dom:loaded', function() {
     // Clicks outside the editable area are caught
     acceptAllClicks();
 
-    $('note_content').focus();
-
     // TODO:  restore cursor position instead of putting it at the end
     putCursorAtEnd($('note_content'));
 });

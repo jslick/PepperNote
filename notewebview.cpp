@@ -69,6 +69,8 @@ void NoteWebView::setNoteContent()
 
     QWebElement contentElement = this->page()->mainFrame()->findFirstElement("#note_content");
     contentElement.setInnerXml(noteHtml);
+
+    this->page()->mainFrame()->evaluateJavaScript("setFocus('note_content', 1, true)");
 }
 
 void NoteWebView::showCurrentPage()

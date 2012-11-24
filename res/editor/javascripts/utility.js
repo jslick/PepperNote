@@ -11,6 +11,24 @@ function addFirebug() {
     document.getElementsByTagName("head")[0].appendChild(firebugLite);
 }
 
+function setFocus(element, focusPosition, withTimeout) {
+    element = $(element);
+    var id = element.id;
+
+    var _setFocus = function() {
+        element = $(id);
+        element.focus();
+
+        if (focusPosition === 1)
+            putCursorAtEnd(element);
+    }
+
+    if (withTimeout)
+        setTimeout(_setFocus, 0);
+    else
+        _setFocus();
+}
+
 function putCursorAtEnd(element) {
     if (document.createRange) {
         var range = document.createRange();
