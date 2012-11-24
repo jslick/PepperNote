@@ -19,16 +19,16 @@ signals:
 public slots:
 
 private slots:
-    void noteChanged();
-    void checkSaveNote();
+    void noteChanged();     // Starts a timer to save the current note
+    void checkSaveNote();   // Check to see if it is time to save the current note
 
-    void setNoteContent();
+    void setNoteContent();  // Sets the contenteditable div contents after the document is loaded
 
 private:
-    void showCurrentPage();
+    void showCurrentPage(); // Sets the view HTML content from this->currentPage
 
     // Event thread only
-    void savePage();
+    void savePage();    // Saves the view HTML to the current page
 
     NotebookPage* currentPage;
 

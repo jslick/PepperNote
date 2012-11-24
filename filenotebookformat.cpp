@@ -61,6 +61,8 @@ void FileNotebookFormat::savePage(NotebookPage& page, const QString& html)
     qint64 numWritten = pageFile.write(html.toUtf8());
     Q_UNUSED(numWritten);
 
+    // If the page is not yet persisted, add it to the manifest, and save the
+    // manifest.
     if (!this->manifest.containsPage(page.getId()))
     {
         this->manifest.addPage("General", page.getId());

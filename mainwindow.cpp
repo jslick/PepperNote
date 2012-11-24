@@ -101,6 +101,7 @@ void MainWindow::loadNotebooks()
     for (int i = 0; i < filenames.size(); i++)
     {
         NotebookManager::instance.loadNotebook(filenames.at(i));
+        // Slot showLoadedNotebook
     }
 
     if (numNotebooks == 0)
@@ -108,6 +109,7 @@ void MainWindow::loadNotebooks()
         // No notebooks found!  Create the default one.
         NotebookFormat* fileFormat = new FileNotebookFormat(notebookFilename);
         NotebookManager::instance.createNotebook(fileFormat);
+        // Slot showLoadedNotebook
     }
 }
 
@@ -118,7 +120,7 @@ void MainWindow::showLoadedNotebook(Notebook* notebook)
     this->loadedNotebooks.append(notebook);
 
     NotebookPage* firstPage = notebook->getFirstPage();
-    CHECK_POINTER_GUI(notebook, tr("Could not load first page of notebook"));
+    CHECK_POINTER_GUI(firstPage, tr("Could not load first page of notebook"));
 
     this->webView->setPage(*firstPage);
     this->webView->focusWidget();

@@ -12,21 +12,39 @@ class NotebookManager : public QObject
 {
     Q_OBJECT
 public:
-    static NotebookManager instance;
+    static NotebookManager instance;    // Singleton; event-thread only access
 
-    explicit NotebookManager(QObject* parent = 0);
-
+    /**
+     * @brief Load the notebook with the filename
+     *
+     * @param filename
+     *
+     * @note The NotebookManager is responsible for discoving the file format of
+     *       a persisted Notebook.
+     * @note Emits notebookLoaded
+     */
     void loadNotebook(const QString& filename);
 
+    /**
+     * @brief Creates a notebook, and adds a default page to the notebook
+     * @param fileFormat    The file format to save the notebook in
+     *
+     * @note Emits notebookLoaded
+     */
     void createNotebook(NotebookFormat* fileFormat);
 
 signals:
 
+    /**
+     * @param notebook
+     */
     void notebookLoaded(Notebook* notebook);
 
 public slots:
 
 private:
+    explicit NotebookManager(QObject* parent = 0);
+
     QQueue<QString> loadQueue;
     QMutex          loadQueueMutex;
 

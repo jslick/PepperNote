@@ -4,9 +4,16 @@
 #include <QFile>
 #include <QMessageBox>
 
-inline QByteArray getFileBytes(const QString& resourceName)
+/**
+ * @brief Get contents of file
+ *
+ * @param fileName
+ *
+ * @return Byte array of file
+ */
+inline QByteArray getFileBytes(const QString& fileName)
 {
-    QFile file(resourceName);
+    QFile file(fileName);
     bool success = file.open(QIODevice::ReadOnly);
     if (!success)
         return "";  // TODO:  Throw exception
@@ -17,12 +24,23 @@ inline QByteArray getFileBytes(const QString& resourceName)
     return contents;
 }
 
+/**
+ * @brief Get the contents of the UTF-8 encoded file
+ *
+ * @param fileName
+ *
+ * @return String of text file
+ */
 inline QString getFileUtf8(const QString& fileName)
 {
     return QString::fromUtf8(getFileBytes(fileName).constData());
 }
 
-// caller responsible for translating messageContents
+/**
+ * @brief Show message box
+ *
+ * @param messageContents   Caller is responsible for translating messageContents
+ */
 inline void showMessage(const QString& messageContents)
 {
     QMessageBox msgBox;
@@ -30,6 +48,10 @@ inline void showMessage(const QString& messageContents)
     msgBox.exec();
 }
 
+/**
+ * @brief If the pointer is null, show a message box and return from the void
+ *        function.
+ */
 #define CHECK_POINTER_GUI(pointer,message)  \
     do {                                    \
         if (!pointer) {                     \

@@ -7,7 +7,7 @@ NotebookFormat::NotebookFormat(Notebook* parent) :
 {
 }
 
-void NotebookFormat::setNotebook(Notebook* notebook)
+void NotebookFormat::setNotebook(Notebook& notebook)
 {
-    this->notebook = notebook;
+    this->notebook = &notebook;
 }

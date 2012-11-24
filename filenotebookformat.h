@@ -8,6 +8,39 @@
 
 class NotebookFormat;
 
+/**
+ * @brief A baseline NotebookFormat implementation
+ *
+ * This format is very simple:  It just saves the pages to separate files, and
+ * maintains a simple JSON manifest file.
+ *
+ * The directory structure is:
+ * - /
+ *   - /pages/manifest.json
+ *   - /pages/
+ *     - /pages/page1.html
+ *     - /pages/page2.html
+ *
+ * The manifest structure is:
+ * @code
+ * {
+ *     "pages": [
+ *         {
+ *             "id": "e671d492-2b0f-4e2a-85ca-a5669d9e31f3",
+ *             "name": "Note"
+ *         }
+ *     ],
+ *     "sections": [
+ *         {
+ *             "name": "General",
+ *             "pages": [
+ *                 "e671d492-2b0f-4e2a-85ca-a5669d9e31f3"
+ *             ]
+ *         }
+ *     ]
+ * }
+ * @endcode
+ */
 class FileNotebookFormat : public NotebookFormat
 {
     Q_OBJECT

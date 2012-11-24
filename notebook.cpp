@@ -8,7 +8,7 @@ Notebook::Notebook(NotebookFormat* fileFormat, QObject* parent) :
     fileFormat(fileFormat)
 {
     if (fileFormat)
-        fileFormat->setNotebook(this);
+        fileFormat->setNotebook(*this);
 }
 
 Notebook::~Notebook()

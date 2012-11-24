@@ -25,7 +25,7 @@ void NotebookManager::loadNotebook(const QString& filename)
 
     NotebookFormat* fileFormat = new FileNotebookFormat(loadFilename);
     Notebook* notebook = new Notebook(fileFormat);
-    fileFormat->load();
+    fileFormat->load(); // load metadata
 
     emit notebookLoaded(notebook);
 }
