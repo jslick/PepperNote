@@ -6,6 +6,8 @@
 
 class NotebookPage;
 
+class QWebInspector;
+
 class NoteWebView : public QWebView
 {
     Q_OBJECT
@@ -17,6 +19,7 @@ public:
 signals:
 
 public slots:
+    void toggleDevTools();
 
 private slots:
     void noteChanged();     // Starts a timer to save the current note
@@ -37,6 +40,8 @@ private:
     // use these members only in event thread
     bool            saveTimerInProgress;
     QElapsedTimer   elapsedSave;
+
+    QWebInspector* inspector;
 };
 
 #endif // NOTEWEBVIEW_H

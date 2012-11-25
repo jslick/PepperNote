@@ -8,6 +8,7 @@
 #include <QTimer>
 #include <QWebFrame>
 #include <QWebElement>
+#include <QWebInspector>
 #include <QDebug>
 
 #define DEFAULT_SAVE_TIMER_INTERVAL (5000)
@@ -16,9 +17,14 @@
 NoteWebView::NoteWebView(QWidget* parent) :
     QWebView(parent),
     currentPage(0),
-    saveTimerInProgress(false)
+    saveTimerInProgress(false),
+    inspector(0)
 {
     this->elapsedSave.invalidate();
+
+    this->page()->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
+    this->inspector = new QWebInspector;
+    inspector->setPage(this->page());
 
     this->initActions();
 
@@ -31,6 +37,11 @@ void NoteWebView::setPage(NotebookPage& page)
 {
     this->currentPage = &page;
     this->showCurrentPage();
+}
+
+void NoteWebView::toggleDevTools()
+{
+    this->inspector->setVisible(!this->inspector->isVisible());
 }
 
 void NoteWebView::noteChanged()
@@ -78,6 +89,13 @@ void NoteWebView::setNoteContent()
 
 void NoteWebView::initActions()
 {
+    QAction* devAction = new QAction(tr("Developer Tools"), this);
+    devAction->setShortcut(tr("F12"));
+    connect(devAction, SIGNAL(triggered()),
+            SLOT(toggleDevTools())
+            );
+    this->addAction(devAction);
+
     QAction* boldAction = this->pageAction(QWebPage::ToggleBold);
     if (boldAction)
     {
