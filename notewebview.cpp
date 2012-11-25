@@ -139,6 +139,22 @@ void NoteWebView::initActions()
         underlineAction->setShortcut(QKeySequence::Underline);
         this->addAction(underlineAction);
     }
+
+    QAction* ulAction = this->pageAction(QWebPage::InsertUnorderedList);
+    if (ulAction)
+    {
+        ulAction->setIconText(tr("Bulleted List"));
+        ulAction->setShortcut(tr("Shift+F12"));
+        this->addAction(ulAction);
+    }
+
+    QAction* olAction = this->pageAction(QWebPage::InsertOrderedList);
+    if (olAction)
+    {
+        olAction->setIconText(tr("Numbered List"));
+        olAction->setShortcut(tr("Ctrl+Shift+F12"));
+        this->addAction(olAction);
+    }
 }
 
 void NoteWebView::showCurrentPage()
