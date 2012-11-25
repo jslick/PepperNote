@@ -39,6 +39,14 @@ void NoteWebView::setPage(NotebookPage& page)
     this->showCurrentPage();
 }
 
+void NoteWebView::closing()
+{
+    if (this->inspector)
+        this->inspector->setVisible(false);
+
+    this->savePage();
+}
+
 void NoteWebView::toggleDevTools()
 {
     this->inspector->setVisible(!this->inspector->isVisible());

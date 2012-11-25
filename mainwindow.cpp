@@ -55,6 +55,13 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::closeEvent(QCloseEvent* event)
+{
+    this->webView->closing();
+
+    QMainWindow::closeEvent(event);
+}
+
 void MainWindow::initToolbar()
 {
     this->ui->mainToolBar->addAction(this->webView->pageAction(QWebPage::ToggleBold));

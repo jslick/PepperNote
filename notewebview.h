@@ -19,6 +19,7 @@ public:
 signals:
 
 public slots:
+    void closing();
     void toggleDevTools();
 
 private slots:
