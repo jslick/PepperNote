@@ -23,6 +23,8 @@ public:
     ~MainWindow();
 
 private:
+    void initToolbar();
+
     void loadNotebooks();
 
 private slots:

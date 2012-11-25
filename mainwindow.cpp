@@ -38,6 +38,8 @@ MainWindow::MainWindow(QWidget* parent) :
 
     this->ui->centralWidget->layout()->addWidget(this->webView);
 
+    this->initToolbar();
+
     connect(&NotebookManager::instance, SIGNAL(notebookLoaded(Notebook*)),
             this, SLOT(showLoadedNotebook(Notebook*))
             );
@@ -51,6 +53,16 @@ MainWindow::~MainWindow()
         delete this->loadedNotebooks.takeLast();
 
     delete ui;
+}
+
+void MainWindow::initToolbar()
+{
+    this->ui->mainToolBar->addAction(this->webView->pageAction(QWebPage::ToggleBold));
+    this->ui->mainToolBar->addAction(this->webView->pageAction(QWebPage::ToggleItalic));
+    this->ui->mainToolBar->addAction(this->webView->pageAction(QWebPage::ToggleUnderline));
+    this->ui->mainToolBar->addSeparator();
+    this->ui->mainToolBar->addAction(this->webView->pageAction(QWebPage::InsertOrderedList));
+    this->ui->mainToolBar->addAction(this->webView->pageAction(QWebPage::InsertUnorderedList));
 }
 
 void MainWindow::loadNotebooks()
