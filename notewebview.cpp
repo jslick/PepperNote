@@ -58,11 +58,9 @@ void NoteWebView::checkSaveNote()
     if (this->elapsedSave.isValid() == false ||
         this->elapsedSave.elapsed() > DEFAULT_SAVE_INTERVAL)
     {
-        qDebug() << '[' << QTime::currentTime() << "] Saving note";
         this->savePage();
 
-        this->elapsedSave.start();
-        this->saveTimerInProgress = false;
+        this->saveTimerInProgress = false;  // Let noteChange() know that it can set a new timer
     }
     else
     {
@@ -87,8 +85,33 @@ void NoteWebView::setNoteContent()
     this->page()->mainFrame()->evaluateJavaScript("setFocus('note_content', 1, true)");
 }
 
+void NoteWebView::savePage()
+{
+    qDebug() << '[' << QTime::currentTime() << "] Saving note";
+
+    QWebElement contentElement = this->page()->mainFrame()->findFirstElement("#note_content");
+    QString contentHtml = contentElement.toInnerXml();
+    try
+    {
+        this->currentPage->saveContent(contentHtml);
+
+        this->elapsedSave.restart();    // Delay next auto-save
+    }
+    catch (NotebookException& e)
+    {
+        showMessage(tr("Unable to save page"));
+    }
+}
+
 void NoteWebView::initActions()
 {
+    QAction* saveAction = new QAction(tr("Save"), this);
+    saveAction->setShortcut(QKeySequence::Save);
+    connect(saveAction, SIGNAL(triggered()),
+            SLOT(savePage())
+            );
+    this->addAction(saveAction);
+
     QAction* devAction = new QAction(tr("Developer Tools"), this);
     devAction->setShortcut(tr("F12"));
     connect(devAction, SIGNAL(triggered()),
@@ -128,19 +151,4 @@ void NoteWebView::showCurrentPage()
     this->setHtml(docHtml, QUrl("qrc:/editor/"));
     // As a consequence of setHtml,
     // setNoteContent() slot will show the note contents
-}
-
-void NoteWebView::savePage()
-{
-    QWebElement contentElement = this->page()->mainFrame()->findFirstElement("#note_content");
-    QString contentHtml = contentElement.toInnerXml();
-    try
-    {
-        this->currentPage->saveContent(contentHtml);
-    }
-    catch (NotebookException& e)
-    {
-        // TODO:  put e message in message
-        showMessage(tr("Unable to save page"));
-    }
 }
