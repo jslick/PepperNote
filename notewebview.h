@@ -25,6 +25,8 @@ private slots:
     void setNoteContent();  // Sets the contenteditable div contents after the document is loaded
 
 private:
+    void initActions();
+
     void showCurrentPage(); // Sets the view HTML content from this->currentPage
 
     // Event thread only

@@ -3,6 +3,7 @@
 #include "notebook.h"       // NotebookException
 #include "notebookpage.h"
 
+#include <QAction>
 #include <QTime>
 #include <QTimer>
 #include <QWebFrame>
@@ -18,6 +19,8 @@ NoteWebView::NoteWebView(QWidget* parent) :
     saveTimerInProgress(false)
 {
     this->elapsedSave.invalidate();
+
+    this->initActions();
 
     connect(this->page(), SIGNAL(contentsChanged()),
             this, SLOT(noteChanged())
@@ -71,6 +74,30 @@ void NoteWebView::setNoteContent()
     contentElement.setInnerXml(noteHtml);
 
     this->page()->mainFrame()->evaluateJavaScript("setFocus('note_content', 1, true)");
+}
+
+void NoteWebView::initActions()
+{
+    QAction* boldAction = this->pageAction(QWebPage::ToggleBold);
+    if (boldAction)
+    {
+        boldAction->setShortcut(QKeySequence::Bold);
+        this->addAction(boldAction);
+    }
+
+    QAction* italicAction = this->pageAction(QWebPage::ToggleItalic);
+    if (italicAction)
+    {
+        italicAction->setShortcut(QKeySequence::Italic);
+        this->addAction(italicAction);
+    }
+
+    QAction* underlineAction = this->pageAction(QWebPage::ToggleUnderline);
+    if (underlineAction)
+    {
+        underlineAction->setShortcut(QKeySequence::Underline);
+        this->addAction(underlineAction);
+    }
 }
 
 void NoteWebView::showCurrentPage()
