@@ -64,12 +64,44 @@ void MainWindow::closeEvent(QCloseEvent* event)
 
 void MainWindow::initToolbar()
 {
-    this->ui->mainToolBar->addAction(this->webView->pageAction(QWebPage::ToggleBold));
-    this->ui->mainToolBar->addAction(this->webView->pageAction(QWebPage::ToggleItalic));
-    this->ui->mainToolBar->addAction(this->webView->pageAction(QWebPage::ToggleUnderline));
-    this->ui->mainToolBar->addSeparator();
-    this->ui->mainToolBar->addAction(this->webView->pageAction(QWebPage::InsertOrderedList));
-    this->ui->mainToolBar->addAction(this->webView->pageAction(QWebPage::InsertUnorderedList));
+    const QWebPage::WebAction ACTIONS[] =
+    {
+        QWebPage::ToggleBold, QWebPage::ToggleItalic, QWebPage::ToggleUnderline,
+        QWebPage::ToggleStrikethrough,
+        QWebPage::NoWebAction, /* separator */
+        QWebPage::InsertOrderedList, QWebPage::InsertUnorderedList,
+        QWebPage::Outdent, QWebPage::Indent,
+        QWebPage::RemoveFormat
+    };
+    const QString ACTION_STD_ICONS[] =
+    {
+        "format-text-bold", "format-text-italic", "format-text-underline",
+        "format-text-strikethrough",
+        "",
+        "format-list-ordered", "format-list-unordered",
+        "format-indent-less", "format-indent-more",
+        "edit-clear-list"
+    };
+
+    for (size_t i = 0; i < sizeof(ACTIONS) / sizeof(QWebPage::WebAction); i++)
+    {
+        QWebPage::WebAction webAction = ACTIONS[i];
+        if (webAction == QWebPage::NoWebAction)
+        {
+            this->ui->mainToolBar->addSeparator();
+            continue;
+        }
+
+        QAction* action = this->webView->pageAction(webAction);
+        if (action)
+        {
+            const QString& iconName = ACTION_STD_ICONS[i];
+            if (iconName.isEmpty() == false)
+                action->setIcon(QIcon::fromTheme(iconName));
+
+            this->ui->mainToolBar->addAction(action);
+        }
+    }
 }
 
 void MainWindow::loadNotebooks()
