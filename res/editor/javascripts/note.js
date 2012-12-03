@@ -1,6 +1,22 @@
 var ENABLE_FIREBUG = false;
 
 /**
+ * Notifies the Qt app that selection changed
+ */
+function notifySelectionChange() {
+    // Put function body in setTimeout so that the selection changes before
+    // getting the computed style
+    setTimeout(function() {
+        var computed = getSelectionStyle();
+        if (computed) {
+            var fontFamily = computed['font-family'];
+            var fontSize = getComputedFontPointSize(computed);
+            Api.selectionChanged(fontFamily, fontSize);
+        }
+    }, 0);
+}
+
+/**
  * If any part of the body is clicked outside of the editable area, the cursor
  * is placed at the end of the #note_content.
  *
@@ -26,6 +42,11 @@ document.observe('dom:loaded', function() {
 
     // Clicks outside the editable area are caught
     acceptAllClicks();
+
+    // Notify the Qt app when the selection changes.  This allows the app to
+    // set its controls based on the current selection (e.g. formatting
+    // controls).
+    $('note_content').observe('selectstart', notifySelectionChange);
 
     // TODO:  restore cursor position instead of putting it at the end
     putCursorAtEnd($('note_content'));

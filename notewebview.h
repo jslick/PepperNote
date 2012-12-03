@@ -5,36 +5,45 @@
 #include <QElapsedTimer>
 
 class NotebookPage;
+class JavascriptApi;
 
+class QFont;
 class QWebInspector;
 
 class NoteWebView : public QWebView
 {
     Q_OBJECT
 public:
-    explicit NoteWebView(QWidget* parent = 0);
+    explicit NoteWebView(JavascriptApi& jsApi, QWidget* parent = 0);
 
     void setPage(NotebookPage& page);
 
 signals:
 
+    void fontChanged(const QString& fontFamily, int fontSize);
+
 public slots:
     void closing();
     void toggleDevTools();
+
+    void setSelectionFont(const QFont& font);
+    void setSelectionFontSize(double fontSize);
 
 private slots:
     void noteChanged();     // Starts a timer to save the current note
     void checkSaveNote();   // Check to see if it is time to save the current note
 
     void setNoteContent();  // Sets the contenteditable div contents after the document is loaded
-    void savePage();    // Saves the view HTML to the current page
+    void savePage();        // Saves the view HTML to the current page
 
 private:
     void initActions();
 
     void showCurrentPage(); // Sets the view HTML content from this->currentPage
 
-    NotebookPage* currentPage;
+    JavascriptApi&  jsApi;
+
+    NotebookPage*   currentPage;
 
     // use these members only in event thread
     bool            saveTimerInProgress;

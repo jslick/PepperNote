@@ -17,6 +17,7 @@ TEMPLATE = app
 SOURCES += main.cpp \
         mainwindow.cpp \
         notewebview.cpp \
+        javascriptapi.cpp \
         notebook.cpp \
         notebookpage.cpp \
         notebookformat.cpp \
@@ -28,6 +29,7 @@ SOURCES += main.cpp \
 HEADERS  += mainwindow.h \
         utility.h \
         notewebview.h \
+        javascriptapi.h \
         notebook.h \
         notebookpage.h \
         notebookformat.h \

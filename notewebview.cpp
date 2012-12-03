@@ -2,6 +2,7 @@
 #include "utility.h"
 #include "notebook.h"       // NotebookException
 #include "notebookpage.h"
+#include "javascriptapi.h"
 
 #include <QAction>
 #include <QTime>
@@ -14,8 +15,9 @@
 #define DEFAULT_SAVE_TIMER_INTERVAL (5000)
 #define DEFAULT_SAVE_INTERVAL       (5000)
 
-NoteWebView::NoteWebView(QWidget* parent) :
+NoteWebView::NoteWebView(JavascriptApi& jsApi, QWidget* parent) :
     QWebView(parent),
+    jsApi(jsApi),
     currentPage(0),
     saveTimerInProgress(false),
     inspector(0)
@@ -26,6 +28,7 @@ NoteWebView::NoteWebView(QWidget* parent) :
     this->inspector = new QWebInspector;
     inspector->setPage(this->page());
 
+    this->page()->mainFrame()->addToJavaScriptWindowObject("Api", &this->jsApi);
     this->initActions();
 
     connect(this->page(), SIGNAL(contentsChanged()),
@@ -50,6 +53,27 @@ void NoteWebView::closing()
 void NoteWebView::toggleDevTools()
 {
     this->inspector->setVisible(!this->inspector->isVisible());
+}
+
+void NoteWebView::setSelectionFont(const QFont& font)
+{
+    QString command = QString("document.execCommand(\"fontName\", false, \"%1\")").arg(font.family());
+    this->page()->mainFrame()->evaluateJavaScript(command);
+}
+
+void NoteWebView::setSelectionFontSize(double fontSize)
+{
+    // TODO:  Create undo stack item
+    //        The QWebPage does not recognize changes made by the JavaScript.
+
+    // fontSize command doesn't work because it expects the ancient 1-7 font
+    // size... where the hell is the command to set font size by point size?
+    QString js = QString("setSelectionFontSize(%1)").arg(fontSize);
+    QVariant result = this->page()->mainFrame()->evaluateJavaScript(js);
+    // Since JavaScript changes to the document don't trigger the
+    // contentsChanged signal, we must manually trigger save
+    if (result.toBool())
+        this->noteChanged();
 }
 
 void NoteWebView::noteChanged()
@@ -90,7 +114,7 @@ void NoteWebView::setNoteContent()
     QWebElement contentElement = this->page()->mainFrame()->findFirstElement("#note_content");
     contentElement.setInnerXml(noteHtml);
 
-    this->page()->mainFrame()->evaluateJavaScript("setFocus('note_content', 1, true)");
+    this->page()->mainFrame()->evaluateJavaScript("setFocus('note_content', 1, true, notifySelectionChange)");
 }
 
 void NoteWebView::savePage()

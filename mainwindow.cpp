@@ -6,12 +6,16 @@
 #include "notebook.h"
 #include "notebookpage.h"
 #include "filenotebookformat.h"
+#include "javascriptapi.h"
 #include "notewebview.h"
 
 #include <QStringBuilder>
 #include <QDir>
 #include <QSettings>
 #include <QDesktopServices>
+#include <QComboBox>
+#include <QFontComboBox>
+#include <QDoubleValidator>
 
 QDir MainWindow::getNotebooksDirectory()
 {
@@ -29,7 +33,8 @@ QString MainWindow::getDefaultNotebookFilename()
 
 MainWindow::MainWindow(QWidget* parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow), webView(new NoteWebView())
+    ui(new Ui::MainWindow), jsApi(new JavascriptApi), webView(new NoteWebView(*this->jsApi)),
+    fontbox(0), fontsizebox(0)
 {
     this->ui->setupUi(this);
     this->resize(800, 640);
@@ -53,6 +58,9 @@ MainWindow::~MainWindow()
         delete this->loadedNotebooks.takeLast();
 
     delete ui;
+
+    if (this->jsApi)
+        delete this->jsApi;
 }
 
 void MainWindow::closeEvent(QCloseEvent* event)
@@ -64,6 +72,21 @@ void MainWindow::closeEvent(QCloseEvent* event)
 
 void MainWindow::initToolbar()
 {
+    this->fontbox = new QFontComboBox;
+    this->ui->mainToolBar->addWidget(fontbox);
+
+    this->fontsizebox = new QComboBox;
+    this->fontsizebox->insertItems(0, QString("6,7,8,9,10,11,12,14,16,18,20,22,24,26,28,30,32,36,40,46,64").split(','));
+    this->fontsizebox->setEditable(true);
+    QDoubleValidator* fontSizeValidator = new QDoubleValidator;
+    fontSizeValidator->setRange(1, 64);
+    fontSizeValidator->setDecimals(1);
+    this->fontsizebox->setValidator(fontSizeValidator);
+    this->fontsizebox->setEditText("10");
+    this->ui->mainToolBar->addWidget(this->fontsizebox);
+
+    this->connectFontControls();
+
     const QWebPage::WebAction ACTIONS[] =
     {
         QWebPage::ToggleBold, QWebPage::ToggleItalic, QWebPage::ToggleUnderline,
@@ -102,6 +125,10 @@ void MainWindow::initToolbar()
             this->ui->mainToolBar->addAction(action);
         }
     }
+
+    connect(this->jsApi, SIGNAL(selectionChanged(QString,double)),
+            SLOT(updateFontControls(QString,double))
+            );
 }
 
 void MainWindow::loadNotebooks()
@@ -174,4 +201,81 @@ void MainWindow::showLoadedNotebook(Notebook* notebook)
     CHECK_POINTER_GUI(firstPage, tr("Could not load first page of notebook"));
 
     this->webView->setPage(*firstPage);
+}
+
+void MainWindow::connectFontControls()
+{
+    if (!this->webView)
+    {
+        qDebug() << "No webview";
+        return;
+    }
+
+    if (this->fontbox)
+    {
+        connect(this->fontbox, SIGNAL(currentFontChanged(QFont)),
+                this->webView, SLOT(setSelectionFont(QFont))
+                );
+    }
+
+    if (this->fontsizebox)
+    {
+        connect(this->fontsizebox, SIGNAL(editTextChanged(QString)),
+                SLOT(setSelectionFontSize(QString))
+                );
+    }
+}
+
+void MainWindow::disconnectFontControls()
+{
+    if (!this->webView)
+    {
+        qDebug() << "No webview";
+        return;
+    }
+
+    if (this->fontbox)
+    {
+        disconnect(this->fontbox, SIGNAL(currentFontChanged(QFont)),
+                   this->webView, SLOT(setSelectionFont(QFont))
+                   );
+    }
+
+    if (this->fontsizebox)
+    {
+        disconnect(this->fontsizebox, SIGNAL(editTextChanged(QString)),
+                   this, SLOT(setSelectionFontSize(QString))
+                   );
+    }
+}
+
+void MainWindow::setSelectionFontSize(const QString& selectedSize)
+{
+    bool ok;
+    double fontSize = selectedSize.toDouble(&ok);
+    if (ok)
+        this->webView->setSelectionFontSize(fontSize);
+    else
+        qDebug() << "Unable to convert font size to double:  " << selectedSize;
+}
+
+void MainWindow::updateFontControls(const QString& fontFamily, double fontSize)
+{
+    // Prevent the control updates from triggering formatting
+    this->disconnectFontControls();
+
+    if (this->fontbox && !fontFamily.isEmpty())
+    {
+        QFont font;
+        font.setFamily(fontFamily);
+        this->fontbox->setCurrentFont(font);
+    }
+
+    if (this->fontsizebox && fontSize >= 1.0)
+    {
+        this->fontsizebox->setEditText(QString::number(fontSize));
+    }
+
+    // Re-enable font control connections
+    QTimer::singleShot(0, this, SLOT(connectFontControls()));
 }
