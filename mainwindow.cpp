@@ -38,8 +38,9 @@ MainWindow::MainWindow(QWidget* parent) :
 {
     this->ui->setupUi(this);
     this->resize(800, 640);
-    // TODO:  save & restore size
-    // TODO:  save & restore state
+    QSettings settings;
+    this->restoreGeometry(settings.value("window/geometry").toByteArray());
+    this->restoreState(settings.value("window/state").toByteArray());
 
     this->ui->centralWidget->layout()->addWidget(this->webView);
 
@@ -66,6 +67,11 @@ MainWindow::~MainWindow()
 void MainWindow::closeEvent(QCloseEvent* event)
 {
     this->webView->closing();
+
+    QSettings settings;
+    settings.setValue("window/state", this->saveState());
+    this->showNormal();
+    settings.setValue("window/geometry", this->saveGeometry());
 
     QMainWindow::closeEvent(event);
 }
