@@ -78,6 +78,11 @@ void MainWindow::closeEvent(QCloseEvent* event)
 
 void MainWindow::initToolbar()
 {
+#if ENABLE_TOOLBAR_FONT_CONTROLS
+    // It works, but it's kinda nasty.  The font family seems to work pretty
+    // well.  But, the font size doesn't yet create an undo stack item since it
+    // had to be implemented through JavaScript.
+
     this->fontbox = new QFontComboBox;
     this->ui->mainToolBar->addWidget(fontbox);
 
@@ -91,7 +96,12 @@ void MainWindow::initToolbar()
     this->fontsizebox->setEditText("10");
     this->ui->mainToolBar->addWidget(this->fontsizebox);
 
+    connect(this->jsApi, SIGNAL(selectionChanged(QString,double)),
+            SLOT(updateFontControls(QString,double))
+            );
+
     this->connectFontControls();
+#endif // ENABLE_TOOLBAR_FONT_CONTROLS
 
     const QWebPage::WebAction ACTIONS[] =
     {
@@ -131,10 +141,6 @@ void MainWindow::initToolbar()
             this->ui->mainToolBar->addAction(action);
         }
     }
-
-    connect(this->jsApi, SIGNAL(selectionChanged(QString,double)),
-            SLOT(updateFontControls(QString,double))
-            );
 }
 
 void MainWindow::loadNotebooks()
