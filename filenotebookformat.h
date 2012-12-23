@@ -49,6 +49,10 @@ public:
 
     virtual void load();
 
+    virtual QStringList getSectionNames() const;
+
+    virtual QStringList getPageNames(const QString& sectionName) const;
+
     virtual bool isPagePersisted(const QString& pageId) const;
 
     virtual QString getPageId(int sectionIndex, int pageIndex) const;

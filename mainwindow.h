@@ -8,6 +8,7 @@ class QComboBox;
 class QFontComboBox;
 class Notebook;
 class JavascriptApi;
+class NotebookTree;
 class NoteWebView;
 
 namespace Ui {
@@ -78,6 +79,8 @@ private:
     Ui::MainWindow* ui;
     JavascriptApi*  jsApi;
     NoteWebView*    webView;
+    NotebookTree*   notebookTree;
+    QDockWidget*    notebookTreeDock;
 
     QFontComboBox*  fontbox;
     QComboBox*      fontsizebox;

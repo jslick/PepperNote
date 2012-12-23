@@ -18,6 +18,16 @@ void FileNotebookFormat::load()
     this->manifest.parseJson(manifestJson);
 }
 
+QStringList FileNotebookFormat::getSectionNames() const
+{
+    return this->manifest.getSectionNames();
+}
+
+QStringList FileNotebookFormat::getPageNames(const QString& sectionName) const
+{
+    return this->manifest.getPageNames(sectionName);
+}
+
 bool FileNotebookFormat::isPagePersisted(const QString& pageId) const
 {
     QString pageFilename = this->getPageFilename(pageId);

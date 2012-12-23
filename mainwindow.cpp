@@ -7,12 +7,14 @@
 #include "notebookpage.h"
 #include "filenotebookformat.h"
 #include "javascriptapi.h"
+#include "notebooktree.h"
 #include "notewebview.h"
 
 #include <QStringBuilder>
 #include <QDir>
 #include <QSettings>
 #include <QDesktopServices>
+#include <QDockWidget>
 #include <QComboBox>
 #include <QFontComboBox>
 #include <QDoubleValidator>
@@ -34,6 +36,7 @@ QString MainWindow::getDefaultNotebookFilename()
 MainWindow::MainWindow(QWidget* parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow), jsApi(new JavascriptApi), webView(new NoteWebView(*this->jsApi)),
+    notebookTree(new NotebookTree), notebookTreeDock(new QDockWidget),
     fontbox(0), fontsizebox(0)
 {
     this->ui->setupUi(this);
@@ -45,6 +48,10 @@ MainWindow::MainWindow(QWidget* parent) :
     this->ui->centralWidget->layout()->addWidget(this->webView);
 
     this->initToolbar();
+
+    this->notebookTreeDock->setWidget(this->notebookTree);
+    this->notebookTreeDock->setFeatures(this->notebookTreeDock->features() & ~QDockWidget::DockWidgetFloatable);
+    this->addDockWidget(Qt::LeftDockWidgetArea, this->notebookTreeDock);
 
     connect(&NotebookManager::instance, SIGNAL(notebookLoaded(Notebook*)),
             this, SLOT(showLoadedNotebook(Notebook*))
@@ -209,6 +216,11 @@ void MainWindow::showLoadedNotebook(Notebook* notebook)
 
     this->loadedNotebooks.append(notebook);
 
+    // Show notebook in tree widget
+    if (this->notebookTree)
+        this->notebookTree->addNotebook(*notebook);
+
+    // Show first notebook page in the notebook
     NotebookPage* firstPage = notebook->getFirstPage();
     CHECK_POINTER_GUI(firstPage, tr("Could not load first page of notebook"));
 

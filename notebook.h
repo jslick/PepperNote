@@ -34,6 +34,10 @@ public:
 
     bool isPagePersisted(const QString& pageId) const;
 
+    QStringList getSectionNames() const;
+
+    QStringList getPageNames(const QString& sectionName) const;
+
     // Not yet thread-safe
     NotebookPage* getFirstPage();
 

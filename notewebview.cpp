@@ -199,4 +199,6 @@ void NoteWebView::showCurrentPage()
     this->setHtml(docHtml, QUrl("qrc:/editor/"));
     // As a consequence of setHtml,
     // setNoteContent() slot will show the note contents
+
+    // TODO:  Expand tree to current page
 }

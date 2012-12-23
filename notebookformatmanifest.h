@@ -15,6 +15,10 @@ public:
 
     QString serialize() const;
 
+    QStringList getSectionNames() const;
+
+    QStringList getPageNames(const QString& sectionName) const;
+
     QString getPageId(int sectionIndex, int pageIndex) const;
 
     bool containsPage(const QString& pageId) const;

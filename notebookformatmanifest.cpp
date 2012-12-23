@@ -80,6 +80,35 @@ QString NotebookFormatManifest::serialize() const
     return QtJson::serialize(top);
 }
 
+QStringList NotebookFormatManifest::getSectionNames() const
+{
+    QStringList sectionNames;
+
+    for (const Section& section : this->sections)
+    {
+        sectionNames.append(section.name);
+    }
+
+    return sectionNames;
+}
+
+QStringList NotebookFormatManifest::getPageNames(const QString& sectionName) const
+{
+    QStringList pageNames;
+
+    Section* section = this->sectionIndex[sectionName];
+    if (!section)
+        return pageNames;
+
+    for (const Page* page : section->pages)
+    {
+        Q_ASSERT(page);
+        pageNames.append(page->name);
+    }
+
+    return pageNames;
+}
+
 QString NotebookFormatManifest::getPageId(int sectionIndex, int pageIndex) const
 {
     if (sectionIndex >= this->sections.length())

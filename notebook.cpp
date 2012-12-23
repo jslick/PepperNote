@@ -29,6 +29,16 @@ bool Notebook::isPagePersisted(const QString& pageId) const
     return this->fileFormat->isPagePersisted(pageId);
 }
 
+QStringList Notebook::getSectionNames() const
+{
+    return this->fileFormat->getSectionNames();
+}
+
+QStringList Notebook::getPageNames(const QString& sectionName) const
+{
+    return this->fileFormat->getPageNames(sectionName);
+}
+
 NotebookPage* Notebook::getFirstPage()
 {
     NotebookPage* page = this->loadedPagesByIndex[0];
