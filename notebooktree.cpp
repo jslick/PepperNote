@@ -3,10 +3,13 @@
 #include "treenotebookpageitem.h"
 #include "notebookexception.h"
 
+#include <QHeaderView>
+
 NotebookTree::NotebookTree(QWidget* parent) :
     QTreeWidget(parent)
 {
     this->setColumnCount(1);
+    this->header()->hide();
 }
 
 void NotebookTree::addNotebook(Notebook& notebook)
