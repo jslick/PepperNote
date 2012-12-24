@@ -70,7 +70,7 @@ QString Notebook::getPageContents(NotebookPage& page) const
 {
     return this->isPagePersisted(page.getId()) ?
            this->getPageContents(page.getId()) :
-                getFileUtf8(":/editor/html/new_note.html");
+           getFileUtf8(":/editor/html/new_note.html");
 }
 
 QString Notebook::getPageContents(const QString& pageId) const

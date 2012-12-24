@@ -49,11 +49,8 @@ MainWindow::MainWindow(QWidget* parent) :
 
     this->ui->centralWidget->layout()->addWidget(this->webView);
 
+    this->initNotebookTree();
     this->initToolbar();
-
-    this->notebookTreeDock->setWidget(this->notebookTree);
-    this->notebookTreeDock->setFeatures(this->notebookTreeDock->features() & ~QDockWidget::DockWidgetFloatable);
-    this->addDockWidget(Qt::LeftDockWidgetArea, this->notebookTreeDock);
 
     connect(&NotebookManager::instance, SIGNAL(notebookLoaded(Notebook*)),
             this, SLOT(showLoadedNotebook(Notebook*))
@@ -150,6 +147,14 @@ void MainWindow::initToolbar()
             this->ui->mainToolBar->addAction(action);
         }
     }
+}
+
+void MainWindow::initNotebookTree()
+{
+    this->notebookTreeDock->setObjectName("Notebook Tree");
+    this->notebookTreeDock->setWidget(this->notebookTree);
+    this->notebookTreeDock->setFeatures(this->notebookTreeDock->features() & ~QDockWidget::DockWidgetFloatable);
+    this->addDockWidget(Qt::LeftDockWidgetArea, this->notebookTreeDock);
 }
 
 void MainWindow::loadNotebooks()

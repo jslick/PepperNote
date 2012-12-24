@@ -34,6 +34,8 @@ protected:
 private:
     void initToolbar();
 
+    void initNotebookTree();
+
     void loadNotebooks();
 
 private slots:
