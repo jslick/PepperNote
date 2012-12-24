@@ -1,6 +1,6 @@
 #include "notebookpage.h"
 #include "utility.h"
-#include "notebook.h"
+#include "notebookexception.h"
 
 #include <QUuid>
 

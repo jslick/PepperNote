@@ -1,8 +1,9 @@
 #include "notewebview.h"
 #include "utility.h"
-#include "notebook.h"       // NotebookException
+#include "notebook.h"
 #include "notebookpage.h"
 #include "javascriptapi.h"
+#include "notebookexception.h"
 
 #include <QAction>
 #include <QTime>

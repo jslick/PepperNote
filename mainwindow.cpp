@@ -10,6 +10,7 @@
 #include "notebooktree.h"
 #include "notewebview.h"
 
+#include <QtCore>
 #include <QStringBuilder>
 #include <QDir>
 #include <QSettings>

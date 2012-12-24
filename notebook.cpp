@@ -2,6 +2,7 @@
 #include "utility.h"
 #include "notebookpage.h"
 #include "notebookformat.h"
+#include "notebookexception.h"
 
 Notebook::Notebook(NotebookFormat* fileFormat, QObject* parent) :
     QObject(parent),

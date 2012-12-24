@@ -1,7 +1,8 @@
 #include "filenotebookformat.h"
 #include "utility.h"
-#include "notebook.h"   // Notebook Exception
+#include "notebook.h"
 #include "notebookpage.h"
+#include "notebookexception.h"
 
 #include <QStringBuilder>
 #include <QDir>

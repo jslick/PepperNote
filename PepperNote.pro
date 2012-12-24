@@ -40,6 +40,7 @@ HEADERS  += mainwindow.h \
         filenotebookformat.h \
         notebooktree.h \
         treenotebookitem.h \
+        notebookexception.h \
         qt-json/json.h
 
 FORMS    += mainwindow.ui
