@@ -1,5 +1,6 @@
 #include "notebooktree.h"
 #include "treenotebookitem.h"
+#include "treenotebookpageitem.h"
 #include "notebookexception.h"
 
 NotebookTree::NotebookTree(QWidget* parent) :
@@ -31,7 +32,7 @@ void NotebookTree::selectPage(Notebook* notebook, NotebookPage* page)
 
     TreeNotebookItem* notebookTree = *notebookTreeIter;
     QTreeWidgetItem* sectionTree = 0;
-    QTreeWidgetItem* pageNode = 0;
+    TreeNotebookPageItem* pageNode = 0;
     notebookTree->getPathToPage(page, sectionTree, pageNode);
     if (!sectionTree)
         throw NotebookException("Result from getPathToPage; sectionTree is null");

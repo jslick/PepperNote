@@ -39,6 +39,16 @@ NoteWebView::NoteWebView(JavascriptApi& jsApi, QWidget* parent) :
 
 void NoteWebView::setPage(Notebook& notebook, NotebookPage& page)
 {
+    if (this->currentPage)
+    {
+        // TODO:  Disk IO in event thread... offload to separate IO thread
+
+        // Make sure the current page gets saved
+        this->savePage();
+        // Forget next scheduled auto-save
+        this->elapsedSave.invalidate();
+    }
+
     this->currentNotebook = &notebook;
     this->currentPage = &page;
     this->showCurrentPage();
@@ -137,6 +147,7 @@ void NoteWebView::savePage()
     }
     catch (NotebookException& e)
     {
+        Q_UNUSED(e);
         showMessage(tr("Unable to save page"));
     }
 }

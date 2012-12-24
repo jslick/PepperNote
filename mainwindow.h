@@ -9,6 +9,7 @@ class QFontComboBox;
 class Notebook;
 class JavascriptApi;
 class NotebookTree;
+class QTreeWidgetItem;
 class NoteWebView;
 
 namespace Ui {
@@ -37,6 +38,14 @@ private:
 
 private slots:
     void showLoadedNotebook(Notebook* notebook);
+
+    /**
+     * @brief Switch to a different page
+     *
+     * @param current   The tree item of the page to switch
+     * @param previous  The previously selected tree item
+     */
+    void switchPage(QTreeWidgetItem* current, QTreeWidgetItem* previous);
 
     /**
      * @brief Enable connections that format the document

@@ -26,6 +26,7 @@ SOURCES += main.cpp \
         filenotebookformat.cpp \
         notebooktree.cpp \
         treenotebookitem.cpp \
+        treenotebookpageitem.cpp \
         qt-json/json.cpp
 
 HEADERS  += mainwindow.h \
@@ -40,6 +41,7 @@ HEADERS  += mainwindow.h \
         filenotebookformat.h \
         notebooktree.h \
         treenotebookitem.h \
+        treenotebookpageitem.h \
         notebookexception.h \
         qt-json/json.h
 

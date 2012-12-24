@@ -1,6 +1,8 @@
 #include "treenotebookitem.h"
+
 #include "notebook.h"
 #include "notebookpage.h"
+#include "treenotebookpageitem.h"
 #include "notebookexception.h"
 
 #include <QObject>
@@ -18,7 +20,9 @@ TreeNotebookItem::TreeNotebookItem(Notebook& notebook) :
 
         for (NotebookPage* page : notebook.getPages(sectionName))
         {
-            QTreeWidgetItem* pageItem = new QTreeWidgetItem;
+            Q_ASSERT(page);
+
+            TreeNotebookPageItem* pageItem = new TreeNotebookPageItem(*this, *page);
             pageItem->setText(0, page->getName());
             sectionItem->addChild(pageItem);
 
@@ -31,7 +35,7 @@ TreeNotebookItem::TreeNotebookItem(Notebook& notebook) :
     }
 }
 
-void TreeNotebookItem::getPathToPage(NotebookPage* page, QTreeWidgetItem*& sectionTree, QTreeWidgetItem*& pageNode)
+void TreeNotebookItem::getPathToPage(NotebookPage* page, QTreeWidgetItem*& sectionTree, TreeNotebookPageItem*& pageNode)
 {
     if (!page)
         throw NotebookException("Cannot get tree path to null page");

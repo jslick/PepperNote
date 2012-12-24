@@ -52,7 +52,7 @@ private:
     bool            saveTimerInProgress;
     QElapsedTimer   elapsedSave;
 
-    QWebInspector* inspector;
+    QWebInspector*  inspector;
 };
 
 #endif // NOTEWEBVIEW_H

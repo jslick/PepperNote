@@ -8,6 +8,7 @@
 #include "filenotebookformat.h"
 #include "javascriptapi.h"
 #include "notebooktree.h"
+#include "treenotebookpageitem.h"
 #include "notewebview.h"
 
 #include <QtCore>
@@ -225,6 +226,10 @@ void MainWindow::showLoadedNotebook(Notebook* notebook)
         connect(this->webView, SIGNAL(pageChanged(Notebook*,NotebookPage*)),
                 this->notebookTree, SLOT(selectPage(Notebook*,NotebookPage*))
                 );
+        // When tree item changes, show the new page
+        connect(this->notebookTree, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
+                SLOT(switchPage(QTreeWidgetItem*,QTreeWidgetItem*))
+                );
     }
 
     // Show first notebook page in the notebook
@@ -232,6 +237,21 @@ void MainWindow::showLoadedNotebook(Notebook* notebook)
     CHECK_POINTER_GUI(firstPage, tr("Could not load first page of notebook"));
 
     this->webView->setPage(*notebook, *firstPage);
+}
+
+void MainWindow::switchPage(QTreeWidgetItem* current, QTreeWidgetItem* previous)
+{
+    Q_ASSERT(current);
+    Q_UNUSED(previous);
+
+    TreeNotebookPageItem* currentItem = dynamic_cast<TreeNotebookPageItem*>( current );
+    if (currentItem)
+    {
+        Notebook& notebook = currentItem->getNotebook();
+        NotebookPage& page = currentItem->getNotebookPage();
+
+        this->webView->setPage(notebook, page);
+    }
 }
 
 void MainWindow::connectFontControls()
