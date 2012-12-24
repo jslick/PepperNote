@@ -219,7 +219,13 @@ void MainWindow::showLoadedNotebook(Notebook* notebook)
 
     // Show notebook in tree widget
     if (this->notebookTree)
+    {
         this->notebookTree->addNotebook(*notebook);
+        // When the page changes, update the tree
+        connect(this->webView, SIGNAL(pageChanged(Notebook*,NotebookPage*)),
+                this->notebookTree, SLOT(selectPage(Notebook*,NotebookPage*))
+                );
+    }
 
     // Show first notebook page in the notebook
     NotebookPage* firstPage = notebook->getFirstPage();

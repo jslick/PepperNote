@@ -21,6 +21,7 @@ public:
 
 signals:
 
+    void pageChanged(Notebook* notebook, NotebookPage* page);
     void fontChanged(const QString& fontFamily, int fontSize);
 
 public slots:

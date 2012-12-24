@@ -116,6 +116,8 @@ void NoteWebView::setNoteContent()
     contentElement.setInnerXml(noteHtml);
 
     this->page()->mainFrame()->evaluateJavaScript("setFocus('note_content', 1, true, notifySelectionChange)");
+
+    emit pageChanged(this->currentNotebook, this->currentPage);
 }
 
 void NoteWebView::savePage()

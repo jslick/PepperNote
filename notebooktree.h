@@ -3,7 +3,11 @@
 
 #include <QTreeWidget>
 
+#include <QHash>
+
 class Notebook;
+class NotebookPage;
+class TreeNotebookItem;
 
 class NotebookTree : public QTreeWidget
 {
@@ -16,7 +20,10 @@ public:
 signals:
 
 public slots:
+    void selectPage(Notebook* notebook, NotebookPage* page);
 
+private:
+    QHash<Notebook*,TreeNotebookItem*> notebookTrees;
 };
 
 #endif // NOTEBOOKTREE_H

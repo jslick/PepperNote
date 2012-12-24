@@ -78,6 +78,8 @@ private slots:
 private:
     Ui::MainWindow* ui;
     JavascriptApi*  jsApi;
+    // NOTE:  The documentation lies.  It says that each note should have an
+    //        instance of JavascriptApi... but there is only this one.
     NoteWebView*    webView;
     NotebookTree*   notebookTree;
     QDockWidget*    notebookTreeDock;
