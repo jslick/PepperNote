@@ -92,21 +92,21 @@ QStringList NotebookFormatManifest::getSectionNames() const
     return sectionNames;
 }
 
-QStringList NotebookFormatManifest::getPageNames(const QString& sectionName) const
+bool NotebookFormatManifest::getPages(const QString& sectionName, QList<QPair<QString, QString> >& pageInfos) const
 {
-    QStringList pageNames;
-
     Section* section = this->sectionIndex[sectionName];
     if (!section)
-        return pageNames;
+        return false;
 
-    for (const Page* page : section->pages)
+    for (Page* page : section->pages)
     {
         Q_ASSERT(page);
-        pageNames.append(page->name);
+
+        auto info = qMakePair(page->id, page->name);
+        pageInfos.append(info);
     }
 
-    return pageNames;
+    return true;
 }
 
 QString NotebookFormatManifest::getPageId(int sectionIndex, int pageIndex) const
@@ -139,7 +139,7 @@ void NotebookFormatManifest::addPage(const QString& sectionName, const QString& 
     section.pages.append(&this->pages.back());
 }
 
-NotebookFormatManifest::Section& NotebookFormatManifest::findOrCreateSection(const QString &sectionName)
+NotebookFormatManifest::Section& NotebookFormatManifest::findOrCreateSection(const QString& sectionName)
 {
     Section* section = this->sectionIndex[sectionName];
     if (!section)

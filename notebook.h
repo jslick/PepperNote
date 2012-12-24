@@ -3,7 +3,6 @@
 
 #include <QObject>
 #include <QtCore>
-#include <QHash>
 
 class NotebookFormat;
 class NotebookPage;
@@ -36,10 +35,11 @@ public:
 
     QStringList getSectionNames() const;
 
-    QStringList getPageNames(const QString& sectionName) const;
+    QList<NotebookPage*> getPages(const QString& sectionName) const;
 
-    // Not yet thread-safe
     NotebookPage* getFirstPage();
+
+    QString getPageContents(NotebookPage& page) const;
 
     QString getPageContents(const QString& pageId) const;
 
@@ -52,9 +52,16 @@ signals:
 public slots:
 
 private:
+    typedef struct {
+        QString                 name;
+        QList<NotebookPage*>    pages;
+    } Section;
+
+    Section& findOrCreateSection(const QString& sectionName);
+
     NotebookFormat* fileFormat;
 
-    QHash<int,NotebookPage*> loadedPagesByIndex;    // page index <-> loaded page
+    QList<Section> sections;
 };
 
 #endif // NOTEBOOK_H

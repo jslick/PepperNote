@@ -18,7 +18,7 @@
 NoteWebView::NoteWebView(JavascriptApi& jsApi, QWidget* parent) :
     QWebView(parent),
     jsApi(jsApi),
-    currentPage(0),
+    currentNotebook(0), currentPage(0),
     saveTimerInProgress(false),
     inspector(0)
 {
@@ -36,8 +36,9 @@ NoteWebView::NoteWebView(JavascriptApi& jsApi, QWidget* parent) :
             );
 }
 
-void NoteWebView::setPage(NotebookPage& page)
+void NoteWebView::setPage(Notebook& notebook, NotebookPage& page)
 {
+    this->currentNotebook = &notebook;
     this->currentPage = &page;
     this->showCurrentPage();
 }
@@ -106,11 +107,10 @@ void NoteWebView::setNoteContent()
 
     CHECK_POINTER_GUI(this->currentPage, "Could not load notebook page");
 
-    // TODO:  Make getHtml asynchronous
-    QString noteHtml = this->currentPage->isPersisted() ?
-                       this->currentPage->getHtml() :
-                       getFileUtf8(":/editor/html/new_note.html");
+    // get the note HTML from disk (or cache)
+    QString noteHtml = this->currentNotebook->getPageContents(*this->currentPage);
 
+    // Get set the main HTML structure that wraps the page's HTML
     QWebElement contentElement = this->page()->mainFrame()->findFirstElement("#note_content");
     contentElement.setInnerXml(noteHtml);
 
@@ -121,11 +121,14 @@ void NoteWebView::savePage()
 {
     qDebug() << '[' << QTime::currentTime() << "] Saving note";
 
+    Q_ASSERT(this->currentNotebook);
+    Q_ASSERT(this->currentPage);
+
     QWebElement contentElement = this->page()->mainFrame()->findFirstElement("#note_content");
     QString contentHtml = contentElement.toInnerXml();
     try
     {
-        this->currentPage->saveContent(contentHtml);
+        this->currentNotebook->savePage(*this->currentPage, contentHtml);
 
         this->elapsedSave.restart();    // Delay next auto-save
     }

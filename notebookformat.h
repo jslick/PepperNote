@@ -53,15 +53,6 @@ public:
     virtual QStringList getSectionNames() const = 0;
 
     /**
-     * @brief Get the namse of all pages in the section, in stored order
-     *
-     * @param sectionName
-     *
-     * @return The names of all pages in the section, in stored order
-     */
-    virtual QStringList getPageNames(const QString& sectionName) const = 0;
-
-    /**
      * @brief Checks to see if the given page is committed
      *
      * @param pageId    The UUID of the page

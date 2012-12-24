@@ -224,7 +224,7 @@ void MainWindow::showLoadedNotebook(Notebook* notebook)
     NotebookPage* firstPage = notebook->getFirstPage();
     CHECK_POINTER_GUI(firstPage, tr("Could not load first page of notebook"));
 
-    this->webView->setPage(*firstPage);
+    this->webView->setPage(*notebook, *firstPage);
 }
 
 void MainWindow::connectFontControls()

@@ -16,16 +16,25 @@ void FileNotebookFormat::load()
 {
     QString manifestJson = getFileUtf8(this->filename % "/manifest.json");
     this->manifest.parseJson(manifestJson);
+
+    for (const QString& sectionName : this->manifest.getSectionNames())
+    {
+        typedef QPair<QString,QString> PageInfo;
+
+        QList<PageInfo> pageInfos;
+        this->manifest.getPages(sectionName, pageInfos);
+
+        for (const PageInfo& pageInfo : pageInfos)
+        {
+            NotebookPage* page = new NotebookPage(pageInfo.first, pageInfo.second);
+            this->notebook->addPage(sectionName, page);
+        }
+    }
 }
 
 QStringList FileNotebookFormat::getSectionNames() const
 {
     return this->manifest.getSectionNames();
-}
-
-QStringList FileNotebookFormat::getPageNames(const QString& sectionName) const
-{
-    return this->manifest.getPageNames(sectionName);
 }
 
 bool FileNotebookFormat::isPagePersisted(const QString& pageId) const
@@ -61,6 +70,12 @@ void FileNotebookFormat::savePage(NotebookPage& page, const QString& html)
     QDir pagesDir = QDir(this->filename % "/pages");
     if (pagesDir.exists() == false)
         pagesDir.mkpath(".");
+
+    // Make sure page has ID; new pages won't have one yet
+    if (page.getId().isEmpty())
+        page.createId();
+
+    Q_ASSERT_X(page.getId().isEmpty() == false, "FileNotebookFormat::savePage", "Page ID cannot be null");
 
     QString pageFilename = pagesDir.path() % '/' % page.getId() % ".html";
     QFile pageFile(pageFilename);

@@ -13,11 +13,15 @@ Notebook::Notebook(NotebookFormat* fileFormat, QObject* parent) :
 
 Notebook::~Notebook()
 {
-    for (auto iter = this->loadedPagesByIndex.begin();
-         iter != this->loadedPagesByIndex.end();
-         iter++)
+    // Destroy pages
+    for (Section& section : this->sections)
     {
-        delete *iter;
+        while (section.pages.isEmpty() == false)
+        {
+            NotebookPage* page = section.pages.takeLast();
+            Q_ASSERT(page);
+            delete page;
+        }
     }
 
     if (this->fileFormat)
@@ -31,30 +35,41 @@ bool Notebook::isPagePersisted(const QString& pageId) const
 
 QStringList Notebook::getSectionNames() const
 {
-    return this->fileFormat->getSectionNames();
+    QStringList sectionNames;
+
+    for (const Section& section : this->sections)
+    {
+        sectionNames.append(section.name);
+    }
+
+    return sectionNames;
 }
 
-QStringList Notebook::getPageNames(const QString& sectionName) const
+QList<NotebookPage*> Notebook::getPages(const QString& sectionName) const
 {
-    return this->fileFormat->getPageNames(sectionName);
+    for (const Section& section : this->sections)
+    {
+        if (section.name == sectionName)
+            return section.pages;
+    }
+
+    return QList<NotebookPage*>();
 }
 
 NotebookPage* Notebook::getFirstPage()
 {
-    NotebookPage* page = this->loadedPagesByIndex[0];
-    if (!page)
-    {
-        if (!this->fileFormat)
-        {
-            showMessage(tr("Cannot get first page of unsaved notebook"));
-            throw NotebookException("fileFormat is null");
-        }
+    if (this->sections.isEmpty())
+        return 0;
 
-        const QString pageId = this->fileFormat->getPageId(0, 0);
-        page = this->loadedPagesByIndex[0] = new NotebookPage(*this, pageId);
-    }
+    Section& firstSection = this->sections[0];
+    return firstSection.pages.isEmpty() ? 0 : firstSection.pages[0];
+}
 
-    return page;
+QString Notebook::getPageContents(NotebookPage& page) const
+{
+    return this->isPagePersisted(page.getId()) ?
+           this->getPageContents(page.getId()) :
+                getFileUtf8(":/editor/html/new_note.html");
 }
 
 QString Notebook::getPageContents(const QString& pageId) const
@@ -70,10 +85,8 @@ QString Notebook::getPageContents(const QString& pageId) const
 
 void Notebook::addPage(const QString& sectionName, NotebookPage* page)
 {
-    // TODO:  Implement
-    // This is a temporary implementation
-    Q_UNUSED(sectionName);
-    this->loadedPagesByIndex[0] = page;
+    Section& section = this->findOrCreateSection(sectionName);
+    section.pages.append(page);
 }
 
 void Notebook::savePage(NotebookPage& page, const QString& html)
@@ -86,8 +99,20 @@ void Notebook::savePage(NotebookPage& page, const QString& html)
     }
     catch (QtConcurrent::Exception& e)
     {
-        // TODO:  Get message from exception; possibly make a base subclass
-        //        of Exception for the whole application.
         throw NotebookException("Could not save page");
     }
+}
+
+Notebook::Section& Notebook::findOrCreateSection(const QString& sectionName)
+{
+    for (Section& section : this->sections)
+    {
+        if (section.name == sectionName)
+            return section;
+    }
+
+    Section newSection;
+    newSection.name = sectionName;
+    this->sections.append(newSection);
+    return this->sections.back();
 }

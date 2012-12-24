@@ -17,7 +17,7 @@ public:
 
     QStringList getSectionNames() const;
 
-    QStringList getPageNames(const QString& sectionName) const;
+    bool getPages(const QString& sectionName, QList<QPair<QString,QString> >& pageInfos) const;
 
     QString getPageId(int sectionIndex, int pageIndex) const;
 

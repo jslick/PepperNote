@@ -3,17 +3,11 @@
 #include "notebook.h"
 
 #include <QUuid>
-#include <QFile>
 
-NotebookPage::NotebookPage(Notebook& parent, const QString& pageId) :
-    QObject(&parent),
-    notebook(parent), pageId(pageId.isEmpty() ? QUuid::createUuid().toString().mid(1, 36) : pageId)
+NotebookPage::NotebookPage(const QString& pageId, const QString& pageName) :
+    QObject(),
+    pageId(pageId), pageName(pageName)
 {
-}
-
-bool NotebookPage::isPersisted() const
-{
-    return this->notebook.isPagePersisted(this->pageId);
 }
 
 QString NotebookPage::getId() const
@@ -21,12 +15,15 @@ QString NotebookPage::getId() const
     return this->pageId;
 }
 
-QString NotebookPage::getHtml()
+QString NotebookPage::createId()
 {
-    return this->notebook.getPageContents(this->pageId);
+    if (this->pageId.isEmpty() == false)
+        throw NotebookException("NotebookPage ID already exists");
+
+    return this->pageId = QUuid::createUuid().toString().mid(1, 36);
 }
 
-void NotebookPage::saveContent(const QString& html)
+QString NotebookPage::getName() const
 {
-    this->notebook.savePage(*this, html);
+    return this->pageName;
 }

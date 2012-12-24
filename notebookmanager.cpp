@@ -33,7 +33,7 @@ void NotebookManager::loadNotebook(const QString& filename)
 void NotebookManager::createNotebook(NotebookFormat* fileFormat)
 {
     Notebook* notebook = new Notebook(fileFormat);
-    NotebookPage* page = new NotebookPage(*notebook);
+    NotebookPage* page = new NotebookPage("", tr("Note"));
     notebook->addPage("General", page);
 
     emit notebookLoaded(notebook);

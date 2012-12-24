@@ -1,5 +1,6 @@
 #include "treenotebookitem.h"
 #include "notebook.h"
+#include "notebookpage.h"
 
 #include <QObject>
 
@@ -14,10 +15,10 @@ TreeNotebookItem::TreeNotebookItem(Notebook& notebook) :
         sectionItem->setText(0, sectionName);
         this->addChild(sectionItem);
 
-        for (const QString& pageName : notebook.getPageNames(sectionName))
+        for (NotebookPage* page : notebook.getPages(sectionName))
         {
             QTreeWidgetItem* pageItem = new QTreeWidgetItem;
-            pageItem->setText(0, pageName);
+            pageItem->setText(0, page->getName());
             sectionItem->addChild(pageItem);
         }
     }

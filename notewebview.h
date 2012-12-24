@@ -4,6 +4,7 @@
 #include <QWebView>
 #include <QElapsedTimer>
 
+class Notebook;
 class NotebookPage;
 class JavascriptApi;
 
@@ -16,7 +17,7 @@ class NoteWebView : public QWebView
 public:
     explicit NoteWebView(JavascriptApi& jsApi, QWidget* parent = 0);
 
-    void setPage(NotebookPage& page);
+    void setPage(Notebook& notebook, NotebookPage& page);
 
 signals:
 
@@ -43,6 +44,7 @@ private:
 
     JavascriptApi&  jsApi;
 
+    Notebook*       currentNotebook;
     NotebookPage*   currentPage;
 
     // use these members only in event thread
