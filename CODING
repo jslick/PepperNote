@@ -1,0 +1,47 @@
+C++
+--------------------
+* Use Doxygen.
+* Expand tabs to 4 spaces.
+* Declare parts of a variable type together.
+  This:
+    QObject* something;
+  Not this:
+    QObject *something;
+* Do not declare multiple variables on one line.
+  This:
+    QString* something;
+  Not this:
+    QString* something, else;
+* Braces are on new lines, except in typdef structs.
+* Keep lines reasonable short.
+* Don't be afraid of the const.
+* Declare source headers before library headers.
+  This:
+    #include "notebook.h"
+
+    #include <QFile>
+  Not this:
+    #include <QFile>
+
+    #include "notebook.h"
+* Use `this->` to indicate that a variable is a member.  Decorating member variables is *ugly*.
+  This:
+    this->something
+  Not this:
+    m_something
+* Use get and set prefixes for properties.  It was a mistake for Qt to omit the `get` prefixes.
+  This:
+    const QString& getName() const;
+  Not this:
+    const QString& name() const;
+* Avoid hungarian prefix crap, except for UI controls.
+
+Javascript
+--------------------
+* Use Doxygen.
+* Expand tabs to 4 spaces.
+* Place braces on the same line, not a new line.
+* Write cross-browser code, if possible.  Don't bother writing code to work on
+  IE - just try to get it to work on Webkit, Gecko, and Opera.
+* Make use of the JavaScript libraries/frameworks (Prototype JS).
+* Use unobtrusive JavaScript.

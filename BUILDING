@@ -1,0 +1,12 @@
+PepperNote builds on g++ and MinGW.  It will not build in VC2010 without
+modification because it makes use of the C++11 range-based for loops.
+
+Build Dependencies:
+* Qt SDK (4.8)
+** QtWebkit
+
+The easiest way to build PepperNote is to build it from Qt Creator.
+
+To build PepperNote from command line:
+qmake /path/to/PepperNote/src
+make -j4

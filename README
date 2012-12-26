@@ -1,0 +1,27 @@
+PepperNote is a cross-platform note-taking software written in C++/Qt.
+
+PepperNote is currently in development and has limited features... but aspires
+to be a fully-featured note-taking program.
+
+A notebook is organized into this structure:
+* Notebook (an indivual file)
+** Notebook section
+*** Notebook pages
+
+Notebook pages are HTML files.
+
+Existing features:
+* Multiple pages
+* Formatted editing (bold, lists, etc)
+
+Partial features:
+* Multiple sections
+  You can hand-edit the manifest to add or remove sections
+
+Features pending for v1.0 release:
+* Application icon
+* Format headings (h1, h2, h3, etc.)
+* Delete pages
+* Rename pages
+* Limit 1 running instance
+* Minimize to tray
