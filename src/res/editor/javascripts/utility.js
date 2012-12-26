@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2012 PepperNote developers
+ * 
+ * See the file license.txt for copying permission.
+ */
+
 if (typeof console === 'undefined')
     window['console'] = {};
 if (!console.log)

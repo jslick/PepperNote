@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2012 PepperNote developers
+ * 
+ * See the file license.txt for copying permission.
+ */
+
 #ifndef NOTEBOOKMANAGER_H
 #define NOTEBOOKMANAGER_H
 
