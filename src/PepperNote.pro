@@ -13,6 +13,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = PepperNote
 TEMPLATE = app
 
+INCLUDEPATH += ../contrib/qt-json/
 
 SOURCES += main.cpp \
         mainwindow.cpp \
@@ -27,7 +28,7 @@ SOURCES += main.cpp \
         notebooktree.cpp \
         treenotebookitem.cpp \
         treenotebookpageitem.cpp \
-        qt-json/json.cpp
+        ../contrib/qt-json/json.cpp
 
 HEADERS  += mainwindow.h \
         utility.h \
@@ -43,7 +44,7 @@ HEADERS  += mainwindow.h \
         treenotebookitem.h \
         treenotebookpageitem.h \
         notebookexception.h \
-        qt-json/json.h
+        ../contrib/qt-json/json.h
 
 FORMS    += mainwindow.ui
 

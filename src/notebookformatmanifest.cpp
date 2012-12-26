@@ -1,6 +1,6 @@
 #include "notebookformatmanifest.h"
 #include "notebookexception.h"
-#include "qt-json/json.h"
+#include <json.h>
 
 #include <QStringList>
 
