@@ -32,6 +32,8 @@ public:
 
 signals:
 
+    void pageAdded(const QString& section, NotebookPage* page);
+
 public slots:
 
 private:

@@ -17,9 +17,12 @@ public:
 
     void addNotebook(Notebook& notebook);
 
+    void addPageItem(Notebook& notebook, const QString& sectionName, NotebookPage& page);
+
 signals:
 
 public slots:
+
     void selectPage(Notebook* notebook, NotebookPage* page);
 
 private:

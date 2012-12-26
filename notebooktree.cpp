@@ -1,4 +1,6 @@
 #include "notebooktree.h"
+
+#include "notebook.h"
 #include "treenotebookitem.h"
 #include "treenotebookpageitem.h"
 #include "notebookexception.h"
@@ -27,6 +29,16 @@ void NotebookTree::addNotebook(Notebook& notebook)
     }
 }
 
+void NotebookTree::addPageItem(Notebook& notebook, const QString& sectionName, NotebookPage& page)
+{
+
+    auto it = this->notebookTrees.find(&notebook);
+    if (it == this->notebookTrees.end())
+        throw NotebookException("Cannot add page to tree; notebook not found");
+    else
+        (*it)->addPageItem(sectionName, page);
+}
+
 void NotebookTree::selectPage(Notebook* notebook, NotebookPage* page)
 {
     auto notebookTreeIter = this->notebookTrees.find(notebook);
@@ -36,11 +48,17 @@ void NotebookTree::selectPage(Notebook* notebook, NotebookPage* page)
     TreeNotebookItem* notebookTree = *notebookTreeIter;
     QTreeWidgetItem* sectionTree = 0;
     TreeNotebookPageItem* pageNode = 0;
-    notebookTree->getPathToPage(page, sectionTree, pageNode);
+    notebookTree->getPathToPage(*page, sectionTree, pageNode);
     if (!sectionTree)
         throw NotebookException("Result from getPathToPage; sectionTree is null");
     if (!pageNode)
         throw NotebookException("Result from getPathToPage; pageNode is null");
+
+    // Deselect all currently selected items in the tree
+    for (QTreeWidgetItem* item : this->selectedItems())
+    {
+        item->setSelected(false);
+    }
 
     notebookTree->setExpanded(true);
     sectionTree->setExpanded(true);

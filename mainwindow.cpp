@@ -37,7 +37,8 @@ QString MainWindow::getDefaultNotebookFilename()
 
 MainWindow::MainWindow(QWidget* parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow), jsApi(new JavascriptApi), webView(new NoteWebView(*this->jsApi)),
+    ui(new Ui::MainWindow), jsApi(new JavascriptApi),
+    fileMenu(0), webView(new NoteWebView(*this->jsApi)),
     notebookTree(new NotebookTree), notebookTreeDock(new QDockWidget),
     fontbox(0), fontsizebox(0)
 {
@@ -49,6 +50,7 @@ MainWindow::MainWindow(QWidget* parent) :
 
     this->ui->centralWidget->layout()->addWidget(this->webView);
 
+    this->initMenubar();
     this->initNotebookTree();
     this->initToolbar();
 
@@ -80,6 +82,17 @@ void MainWindow::closeEvent(QCloseEvent* event)
     settings.setValue("window/geometry", this->saveGeometry());
 
     QMainWindow::closeEvent(event);
+}
+
+void MainWindow::initMenubar()
+{
+    this->fileMenu = menuBar()->addMenu(tr("&File"));
+    QAction* newPageAction = new QAction(tr("New Page"), this);
+    newPageAction->setShortcut(QKeySequence::New);
+    connect(newPageAction, SIGNAL(triggered()),
+            SLOT(createNewPage())
+            );
+    fileMenu->addAction(newPageAction);
 }
 
 void MainWindow::initToolbar()
@@ -242,6 +255,17 @@ void MainWindow::showLoadedNotebook(Notebook* notebook)
     CHECK_POINTER_GUI(firstPage, tr("Could not load first page of notebook"));
 
     this->webView->setPage(*notebook, *firstPage);
+}
+
+void MainWindow::createNewPage()
+{
+    // TODO:  New page goes in currently selected section (or "General")
+    // Also, new page goes in currently selected notebook
+
+    NotebookPage* newPage = new NotebookPage("", tr("New Note"));
+    this->loadedNotebooks[0]->addPage("General", newPage);
+    this->notebookTree->addPageItem(*this->loadedNotebooks[0], "General", *newPage);
+    this->webView->setPage(*this->loadedNotebooks[0], *newPage);
 }
 
 void MainWindow::switchPage(QTreeWidgetItem* current, QTreeWidgetItem* previous)

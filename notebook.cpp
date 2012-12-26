@@ -88,6 +88,8 @@ void Notebook::addPage(const QString& sectionName, NotebookPage* page)
 {
     Section& section = this->findOrCreateSection(sectionName);
     section.pages.append(page);
+
+    emit pageAdded(sectionName, page);
 }
 
 void Notebook::savePage(NotebookPage& page, const QString& html)

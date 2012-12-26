@@ -20,7 +20,22 @@ class TreeNotebookItem : public QTreeWidgetItem
 public:
     explicit TreeNotebookItem(Notebook& notebook);
 
-    void getPathToPage(NotebookPage* page, QTreeWidgetItem*& sectionTree, TreeNotebookPageItem*& pageNode);
+    /**
+     * @brief Get the section item and page item of the specified page
+     *
+     * @param page          The page to search for in the tree
+     * @param sectionTree   [out] Returns the section item that the tree is in
+     * @param pageNode      [out] Returns the page item that represents the page
+     */
+    void getPathToPage(NotebookPage& page, QTreeWidgetItem*& sectionTree, TreeNotebookPageItem*& pageNode);
+
+    /**
+     * @brief Add a page item to the tree
+     *
+     * @param sectionName
+     * @param page
+     */
+    void addPageItem(const QString& sectionName, NotebookPage& page);
 
     Notebook& notebook;
 
@@ -29,6 +44,16 @@ signals:
 public slots:
 
 private:
+
+    QTreeWidgetItem& findOrCreateSectionItem(const QString& sectionName);
+
+    /**
+     * @brief Add a tree item for the page in the specified section
+     *
+     * @param sectionItem   Section item to place the new page item in
+     * @param page          The page to create a page item for
+     */
+    void addPageToSectionItem(QTreeWidgetItem& sectionItem, NotebookPage& page);
 
     QHash<NotebookPage*,QPair<QTreeWidgetItem*,TreeNotebookPageItem*> > sectionTrees;
     // NOTE:  This data structure would cause problems if pages were to be

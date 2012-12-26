@@ -8,6 +8,7 @@ class QComboBox;
 class QFontComboBox;
 class Notebook;
 class JavascriptApi;
+class QMenu;
 class NotebookTree;
 class QTreeWidgetItem;
 class NoteWebView;
@@ -32,6 +33,8 @@ protected:
     void closeEvent(QCloseEvent* event);
 
 private:
+    void initMenubar();
+
     void initToolbar();
 
     void initNotebookTree();
@@ -40,6 +43,8 @@ private:
 
 private slots:
     void showLoadedNotebook(Notebook* notebook);
+
+    void createNewPage();
 
     /**
      * @brief Switch to a different page
@@ -91,6 +96,7 @@ private:
     JavascriptApi*  jsApi;
     // NOTE:  The documentation lies.  It says that each note should have an
     //        instance of JavascriptApi... but there is only this one.
+    QMenu*          fileMenu;
     NoteWebView*    webView;
     NotebookTree*   notebookTree;
     QDockWidget*    notebookTreeDock;
