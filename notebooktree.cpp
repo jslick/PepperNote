@@ -17,9 +17,9 @@ NotebookTree::NotebookTree(QWidget* parent) :
 void NotebookTree::addNotebook(Notebook& notebook)
 {
     TreeNotebookItem* treeItem = new TreeNotebookItem(notebook);
-    if (this->notebookTrees.find(&notebook) == this->notebookTrees.end())
+    if (this->notebookTreeItems.find(&notebook) == this->notebookTreeItems.end())
     {
-        this->notebookTrees[&notebook] = treeItem;
+        this->notebookTreeItems[&notebook] = treeItem;
         this->addTopLevelItem(treeItem);
     }
     else
@@ -32,8 +32,8 @@ void NotebookTree::addNotebook(Notebook& notebook)
 void NotebookTree::addPageItem(Notebook& notebook, const QString& sectionName, NotebookPage& page)
 {
 
-    auto it = this->notebookTrees.find(&notebook);
-    if (it == this->notebookTrees.end())
+    auto it = this->notebookTreeItems.find(&notebook);
+    if (it == this->notebookTreeItems.end())
         throw NotebookException("Cannot add page to tree; notebook not found");
     else
         (*it)->addPageItem(sectionName, page);
@@ -41,8 +41,8 @@ void NotebookTree::addPageItem(Notebook& notebook, const QString& sectionName, N
 
 void NotebookTree::selectPage(Notebook* notebook, NotebookPage* page)
 {
-    auto notebookTreeIter = this->notebookTrees.find(notebook);
-    if (notebookTreeIter == this->notebookTrees.end())
+    auto notebookTreeIter = this->notebookTreeItems.find(notebook);
+    if (notebookTreeIter == this->notebookTreeItems.end())
         throw NotebookException("Could not find tree node for the page to select");
 
     TreeNotebookItem* notebookTree = *notebookTreeIter;

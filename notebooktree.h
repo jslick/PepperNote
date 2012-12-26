@@ -26,7 +26,7 @@ public slots:
     void selectPage(Notebook* notebook, NotebookPage* page);
 
 private:
-    QHash<Notebook*,TreeNotebookItem*> notebookTrees;
+    QHash<Notebook*,TreeNotebookItem*> notebookTreeItems;
 };
 
 #endif // NOTEBOOKTREE_H
