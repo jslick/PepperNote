@@ -17,16 +17,50 @@ class NotebookFormatManifest : public QObject
 public:
     explicit NotebookFormatManifest(QObject* parent = 0);
 
+    /**
+     * @brief Parse JSON string into data structures
+     *
+     * @param manifestJson  JSON string
+     */
     void parseJson(const QString& manifestJson);
 
+    /**
+     * @brief Serialize manifest into JSON string
+     *
+     * @return JSON string
+     */
     QString serialize() const;
 
+    /**
+     * @return Names of all sections in the manifest, in order that they are
+     *         defined in the manifest
+     */
     QStringList getSectionNames() const;
 
+    /**
+     * @brief Get a list of pages within a section, in the order that they are
+     *        defined in the manifest
+     *
+     * @param sectionName
+     * @param pageInfos     List of pages.  Each element is a pair of the page
+     *                      ID and the page name.
+     * @return Success or failure
+     */
     bool getPages(const QString& sectionName, QList<QPair<QString,QString> >& pageInfos) const;
 
+    /**
+     * @param sectionIndex
+     * @param pageIndex
+     *
+     * @return Page ID of the ith section and jth page
+     */
     QString getPageId(int sectionIndex, int pageIndex) const;
 
+    /**
+     * @param pageId
+     *
+     * @return True if the manifest contains the specified page
+     */
     bool containsPage(const QString& pageId) const;
 
     /**
