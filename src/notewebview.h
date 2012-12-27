@@ -51,6 +51,8 @@ private:
 
     void showCurrentPage(); // Sets the view HTML content from this->currentPage
 
+    inline QVariant evaluateJavaScript(const QString& script);  // Evaluates JavaScript in the main frame
+
     JavascriptApi&  jsApi;
 
     Notebook*       currentNotebook;

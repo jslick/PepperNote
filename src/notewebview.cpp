@@ -80,7 +80,7 @@ void NoteWebView::toggleDevTools()
 void NoteWebView::setSelectionFont(const QFont& font)
 {
     QString command = QString("document.execCommand(\"fontName\", false, \"%1\")").arg(font.family());
-    this->page()->mainFrame()->evaluateJavaScript(command);
+    this->evaluateJavaScript(command);
 }
 
 void NoteWebView::setSelectionFontSize(double fontSize)
@@ -91,7 +91,7 @@ void NoteWebView::setSelectionFontSize(double fontSize)
     // fontSize command doesn't work because it expects the ancient 1-7 font
     // size... where the hell is the command to set font size by point size?
     QString js = QString("setSelectionFontSize(%1)").arg(fontSize);
-    QVariant result = this->page()->mainFrame()->evaluateJavaScript(js);
+    QVariant result = this->evaluateJavaScript(js);
     // Since JavaScript changes to the document don't trigger the
     // contentsChanged signal, we must manually trigger save
     if (result.toBool())
@@ -135,14 +135,14 @@ void NoteWebView::setNoteContent()
     QWebElement contentElement = this->page()->mainFrame()->findFirstElement("#page_content");
     contentElement.setInnerXml(noteHtml);
 
-    this->page()->mainFrame()->evaluateJavaScript("setFocus('page_content', 1, true, notifySelectionChange)");
+    this->evaluateJavaScript("setFocus('page_content', 1, true, notifySelectionChange)");
     if (this->currentNotebook->isPagePersisted(this->currentPage->getId()) == false)
     {
         // Tell JavaScript what the page title should be for a new note
-        this->page()->mainFrame()->evaluateJavaScript(QString("initialPageTitle = '%1';").arg(currentPage->getName()));
+        this->evaluateJavaScript(QString("initialPageTitle = '%1';").arg(currentPage->getName()));
     }
     // Let the JavaScript know that page content was inserted:
-    this->page()->mainFrame()->evaluateJavaScript("setTimeout(pageLoaded, 0)");
+    this->evaluateJavaScript("setTimeout(pageLoaded, 0)");
 
     emit pageChanged(this->currentNotebook, this->currentPage);
 }
@@ -235,4 +235,9 @@ void NoteWebView::showCurrentPage()
     this->page()->mainFrame()->addToJavaScriptWindowObject("Api", &this->jsApi);
     // As a consequence of setHtml,
     // setNoteContent() slot will show the note contents
+}
+
+QVariant NoteWebView::evaluateJavaScript(const QString& script)
+{
+    return this->page()->mainFrame()->evaluateJavaScript(script);
 }
