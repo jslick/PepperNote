@@ -6,7 +6,8 @@
 
 QT       += core gui
 QT       += webkit
-QMAKE_CXXFLAGS += -std=c++11
+win32:QMAKE_CXXFLAGS += -std=c++0x
+else:QMAKE_CXXFLAGS += -std=c++11
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
