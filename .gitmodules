@@ -1,6 +1,3 @@
-[submodule "res/qt-json"]
-	path = contrib/qt-json
-	url = git://github.com/ereilin/qt-json.git
 [submodule "contrib/qt-json"]
 	path = contrib/qt-json
 	url = git://github.com/ereilin/qt-json.git
