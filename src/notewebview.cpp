@@ -35,7 +35,6 @@ NoteWebView::NoteWebView(JavascriptApi& jsApi, QWidget* parent) :
     this->inspector = new QWebInspector;
     inspector->setPage(this->page());
 
-    this->page()->mainFrame()->addToJavaScriptWindowObject("Api", &this->jsApi);
     this->initActions();
 
     connect(this->page(), SIGNAL(contentsChanged()),
@@ -220,6 +219,8 @@ void NoteWebView::showCurrentPage()
 
     QString docHtml = getFileUtf8(":/editor/html/page.html");
     this->setHtml(docHtml, QUrl("qrc:/editor/"));
+    // Expose Api object to JavaScript
+    this->page()->mainFrame()->addToJavaScriptWindowObject("Api", &this->jsApi);
     // As a consequence of setHtml,
     // setNoteContent() slot will show the note contents
 }
