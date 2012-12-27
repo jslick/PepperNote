@@ -97,7 +97,13 @@ void FileNotebookFormat::savePage(NotebookPage& page, const QString& html)
     // manifest.
     if (!this->manifest.containsPage(page.getId()))
     {
-        this->manifest.addPage("General", page.getId());
+        this->manifest.addPage("General", page.getId(), page.getName());
+        this->saveManifest();
+    }
+    // Check to see if page name needs to be updated in manifest
+    else if (this->manifest.getPageName(page.getId()) != page.getName())
+    {
+        this->manifest.setPageName(page.getId(), page.getName());
         this->saveManifest();
     }
 

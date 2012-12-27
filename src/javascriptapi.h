@@ -28,8 +28,17 @@ public:
      *
      * @param fontFamily    The font face of the new text selection
      * @param fontSize      The font size of the new text selection
+     * @note emits selectionChanged
      */
     Q_INVOKABLE void notifySelectionChanged(const QString& fontFamily, double fontSize);
+
+    /**
+     * @brief Notifies the Qt app that the page title (h1#page_title) changed
+     *
+     * @param pageTitle     New page title
+     * @note emits titleChanged
+     */
+    Q_INVOKABLE void notifyTitleChanged(const QString& pageTitle);
 
 signals:
 
@@ -39,6 +48,8 @@ signals:
      * @param fontSize      The font size of the new text selection
      */
     void selectionChanged(const QString& fontFamily, double fontSize);
+
+    void titleChanged(const QString& pageTitle);
 
 public slots:
 

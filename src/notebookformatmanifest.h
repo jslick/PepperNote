@@ -29,7 +29,31 @@ public:
 
     bool containsPage(const QString& pageId) const;
 
-    void addPage(const QString& sectionName, const QString& pageId);
+    /**
+     * @brief Add a new page to the manifest
+     *
+     * This function does not care if a page is added multiple times
+     *
+     * @param sectionName   Section that the page should belong in
+     * @param pageId        ID of the new page.  Cannot be empty.
+     * @param pageName      Name of the page
+     * @pre The pageId cannot be empty.
+     * @pre The page ID must be unique
+     */
+    void addPage(const QString& sectionName, const QString& pageId, const QString& pageName);
+
+    /**
+     * @param pageId
+     *
+     * @return Name of the page with the specified page ID
+     */
+    const QString& getPageName(const QString& pageId) const;
+
+    /**
+     * @param pageId
+     * @param pageName
+     */
+    void setPageName(const QString& pageId, const QString& pageName);
 
 signals:
 

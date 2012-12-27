@@ -23,6 +23,19 @@ function notifySelectionChange() {
 }
 
 /**
+ * Notifies the Qt app that the #page_title changed
+ */
+function notifyTitleChange() {
+    var pageTitleElement = $('page_title');
+    var pageTitle = pageTitleElement ? pageTitleElement.innerText : '';
+    pageTitle = pageTitle.strip();
+    if (!pageTitle)
+        return;
+
+    Api.notifyTitleChanged(pageTitle);
+}
+
+/**
  * If any part of the body is clicked outside of the editable area, the cursor
  * is placed at the end of the #page_content.
  *
@@ -57,3 +70,18 @@ document.observe('dom:loaded', function() {
     // TODO:  restore cursor position instead of putting it at the end
     putCursorAtEnd($('page_content'));
 });
+
+/**
+ * Invoked by the native app when the #page_content is loaded
+ */
+function pageLoaded() {
+    var pageTitleElement = $('page_title');
+    if (pageTitleElement) {
+        // Check to see if the #page_title should be updated from the default
+        // page template by checking for this global variable
+        if (typeof initialPageTitle !== 'undefined')
+            pageTitleElement.update(initialPageTitle);
+
+        pageTitleElement.observe('DOMCharacterDataModified', notifyTitleChange);
+    }
+}

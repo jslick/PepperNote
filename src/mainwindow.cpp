@@ -54,6 +54,11 @@ MainWindow::MainWindow(QWidget* parent) :
     this->restoreGeometry(settings.value("window/geometry").toByteArray());
     this->restoreState(settings.value("window/state").toByteArray());
 
+    // When the page title changes in the editor, update the NotebookPage name
+    connect(this->jsApi, SIGNAL(titleChanged(QString)),
+            SLOT(setCurrentPageName(QString))
+            );
+
     this->ui->centralWidget->layout()->addWidget(this->webView);
 
     this->initMenubar();
@@ -287,6 +292,21 @@ void MainWindow::switchPage(QTreeWidgetItem* current, QTreeWidgetItem* previous)
 
         this->webView->setPage(notebook, page);
     }
+}
+
+void MainWindow::setCurrentPageName(QString pageTitle)
+{
+    NotebookPage* page = this->webView->getCurrentPage();
+    if (!page)
+    {
+        showMessage("Cannot set current page title");   // Hope user never never sees this
+        return;
+    }
+
+    pageTitle = pageTitle.trimmed();
+
+    if (pageTitle.isEmpty() == false)
+        page->setName(pageTitle);
 }
 
 void MainWindow::connectFontControls()

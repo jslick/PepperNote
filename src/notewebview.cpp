@@ -42,6 +42,11 @@ NoteWebView::NoteWebView(JavascriptApi& jsApi, QWidget* parent) :
             );
 }
 
+NotebookPage* NoteWebView::getCurrentPage()
+{
+    return this->currentPage;
+}
+
 void NoteWebView::setPage(Notebook& notebook, NotebookPage& page)
 {
     if (this->currentPage)
@@ -131,6 +136,13 @@ void NoteWebView::setNoteContent()
     contentElement.setInnerXml(noteHtml);
 
     this->page()->mainFrame()->evaluateJavaScript("setFocus('page_content', 1, true, notifySelectionChange)");
+    if (this->currentNotebook->isPagePersisted(this->currentPage->getId()) == false)
+    {
+        // Tell JavaScript what the page title should be for a new note
+        this->page()->mainFrame()->evaluateJavaScript(QString("initialPageTitle = '%1';").arg(currentPage->getName()));
+    }
+    // Let the JavaScript know that page content was inserted:
+    this->page()->mainFrame()->evaluateJavaScript("setTimeout(pageLoaded, 0)");
 
     emit pageChanged(this->currentNotebook, this->currentPage);
 }

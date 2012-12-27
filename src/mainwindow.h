@@ -61,6 +61,13 @@ private slots:
     void switchPage(QTreeWidgetItem* current, QTreeWidgetItem* previous);
 
     /**
+     * @brief Set the page name of the page in the current web view
+     *
+     * @param pageTitle     The new page title
+     */
+    void setCurrentPageName(QString pageTitle);
+
+    /**
      * @brief Enable connections that format the document
      *
      * When the controls are programmatically updated, they probably shouldn't

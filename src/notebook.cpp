@@ -108,6 +108,8 @@ void Notebook::savePage(NotebookPage& page, const QString& html)
     }
     catch (QtConcurrent::Exception& e)
     {
+        Q_UNUSED(e);
+
         throw NotebookException("Could not save page");
     }
 }

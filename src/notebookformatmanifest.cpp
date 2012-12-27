@@ -5,6 +5,7 @@
  */
 
 #include "notebookformatmanifest.h"
+
 #include "notebookexception.h"
 #include <json.h>
 
@@ -133,16 +134,49 @@ bool NotebookFormatManifest::containsPage(const QString& pageId) const
     return this->pageIndex[pageId] ? true : false;
 }
 
-void NotebookFormatManifest::addPage(const QString& sectionName, const QString& pageId)
+void NotebookFormatManifest::addPage(const QString& sectionName, const QString& pageId, const QString& pageName)
 {
+    if (pageId.isEmpty())
+        throw NotebookException("Cannot add page with empty ID to manifest");
+
     Page page;
     page.id = pageId;
-    page.name = "Note";
+    page.name = pageName;
     this->pages.append(page);
     this->pageIndex[pageId] = &this->pages.back();
 
     Section& section = this->findOrCreateSection(sectionName);
     section.pages.append(&this->pages.back());
+}
+
+const QString& NotebookFormatManifest::getPageName(const QString& pageId) const
+{
+    if (pageId.isEmpty())
+        throw NotebookException("Could not get page name; page ID cannot be blank");
+
+    auto it = this->pageIndex.find(pageId);
+    if (it == this->pageIndex.end())
+        throw NotebookException("Could not get page name; page " % pageId % " does not exist");
+
+    Page* page = *it;
+    Q_ASSERT(page);
+
+    return page->name;
+}
+
+void NotebookFormatManifest::setPageName(const QString& pageId, const QString& pageName)
+{
+    if (pageId.isEmpty())
+        throw NotebookException("Could not get page name; page ID cannot be blank");
+
+    auto it = this->pageIndex.find(pageId);
+    if (it == this->pageIndex.end())
+        throw NotebookException("Could not set page name; page " % pageId % " does not exist");
+
+    Page* page = *it;
+    Q_ASSERT(page);
+
+    page->name = pageName;
 }
 
 NotebookFormatManifest::Section& NotebookFormatManifest::findOrCreateSection(const QString& sectionName)

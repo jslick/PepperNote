@@ -23,6 +23,8 @@ class NoteWebView : public QWebView
 public:
     explicit NoteWebView(JavascriptApi& jsApi, QWidget* parent = 0);
 
+    NotebookPage* getCurrentPage();
+
     void setPage(Notebook& notebook, NotebookPage& page);
 
 signals:

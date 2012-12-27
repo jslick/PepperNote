@@ -15,3 +15,8 @@ void JavascriptApi::notifySelectionChanged(const QString& fontFamily, double fon
 {
     emit selectionChanged(fontFamily, fontSize);
 }
+
+void JavascriptApi::notifyTitleChanged(const QString& pageTitle)
+{
+    emit titleChanged(pageTitle);
+}

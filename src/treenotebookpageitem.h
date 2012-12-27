@@ -22,14 +22,19 @@ class NotebookPage;
  *  ** Notebook section
  *  *** Notebook page (this class)
  */
-class TreeNotebookPageItem : public QTreeWidgetItem
+class TreeNotebookPageItem : public QObject, public QTreeWidgetItem
 {
+    Q_OBJECT
 public:
     TreeNotebookPageItem(TreeNotebookItem& parent, NotebookPage& page);
 
     Notebook& getNotebook();
 
     NotebookPage& getNotebookPage();
+
+private slots:
+
+    void updateText(const QString& pageName);
 
 private:
     TreeNotebookItem&   parent;

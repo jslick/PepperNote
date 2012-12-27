@@ -33,3 +33,13 @@ QString NotebookPage::getName() const
 {
     return this->pageName;
 }
+
+void NotebookPage::setName(const QString& pageName)
+{
+    if (pageName.isEmpty())
+        throw NotebookException("NotebookPage page name cannot be empty");
+
+    this->pageName = pageName;
+
+    emit pageNameChanged(pageName);
+}

@@ -23,7 +23,21 @@ public:
 
     QString getName() const;
 
+    /**
+     * @param pageName
+     * @note Emits pageNameChanged
+     */
+    void setName(const QString& pageName);
+
 signals:
+
+    /**
+     * @brief Emitted when the pageName changes, but not when the object is
+     *        created
+     *
+     * @param pageName  The new pageName
+     */
+    void pageNameChanged(QString pageName);
 
 public slots:
 

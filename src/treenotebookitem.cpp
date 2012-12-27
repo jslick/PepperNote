@@ -7,7 +7,6 @@
 #include "treenotebookitem.h"
 
 #include "notebook.h"
-#include "notebookpage.h"
 #include "treenotebookpageitem.h"
 #include "notebookexception.h"
 
@@ -70,7 +69,6 @@ QTreeWidgetItem& TreeNotebookItem::findOrCreateSectionItem(const QString& sectio
 void TreeNotebookItem::addPageToSectionItem(QTreeWidgetItem& sectionItem, NotebookPage& page)
 {
     TreeNotebookPageItem* pageItem = new TreeNotebookPageItem(*this, page);
-    pageItem->setText(0, page.getName());
     sectionItem.addChild(pageItem);
 
     // Save the path to this page
