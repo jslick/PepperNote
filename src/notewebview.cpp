@@ -127,10 +127,10 @@ void NoteWebView::setNoteContent()
     QString noteHtml = this->currentNotebook->getPageContents(*this->currentPage);
 
     // Get set the main HTML structure that wraps the page's HTML
-    QWebElement contentElement = this->page()->mainFrame()->findFirstElement("#note_content");
+    QWebElement contentElement = this->page()->mainFrame()->findFirstElement("#page_content");
     contentElement.setInnerXml(noteHtml);
 
-    this->page()->mainFrame()->evaluateJavaScript("setFocus('note_content', 1, true, notifySelectionChange)");
+    this->page()->mainFrame()->evaluateJavaScript("setFocus('page_content', 1, true, notifySelectionChange)");
 
     emit pageChanged(this->currentNotebook, this->currentPage);
 }
@@ -142,7 +142,7 @@ void NoteWebView::savePage()
     Q_ASSERT(this->currentNotebook);
     Q_ASSERT(this->currentPage);
 
-    QWebElement contentElement = this->page()->mainFrame()->findFirstElement("#note_content");
+    QWebElement contentElement = this->page()->mainFrame()->findFirstElement("#page_content");
     QString contentHtml = contentElement.toInnerXml();
     try
     {

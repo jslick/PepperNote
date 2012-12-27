@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2012 PepperNote developers
- * 
+ *
  * See the file license.txt for copying permission.
  */
 
@@ -24,7 +24,7 @@ function notifySelectionChange() {
 
 /**
  * If any part of the body is clicked outside of the editable area, the cursor
- * is placed at the end of the #note_content.
+ * is placed at the end of the #page_content.
  *
  * NOTE:  For this to work, body height must be 100%.
  */
@@ -33,11 +33,11 @@ function acceptAllClicks() {
 
     document.body.observe('click', function(event) {
         if (!noteContentClicked)
-            putCursorAtEnd($('note_content'));
+            putCursorAtEnd($('page_content'));
         noteContentClicked = false;
     });
 
-    $('note_content').observe('click', function(event) {
+    $('page_content').observe('click', function(event) {
         noteContentClicked = true;
     });
 }
@@ -52,8 +52,8 @@ document.observe('dom:loaded', function() {
     // Notify the Qt app when the selection changes.  This allows the app to
     // set its controls based on the current selection (e.g. formatting
     // controls).
-    $('note_content').observe('selectstart', notifySelectionChange);
+    $('page_content').observe('selectstart', notifySelectionChange);
 
     // TODO:  restore cursor position instead of putting it at the end
-    putCursorAtEnd($('note_content'));
+    putCursorAtEnd($('page_content'));
 });
