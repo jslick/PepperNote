@@ -1,14 +1,14 @@
 <RCC>
     <qresource prefix="/editor/html" lang="en_US">
-        <file alias="new_note.html">res/editor/html/new_note.html</file>
-        <file alias="note.html">res/editor/html/note.html</file>
+        <file alias="new_page.html">res/editor/html/new_page.html</file>
+        <file alias="page.html">res/editor/html/page.html</file>
     </qresource>
     <qresource prefix="/editor/css">
-        <file alias="note.css">res/editor/css/note.css</file>
+        <file alias="page.css">res/editor/css/page.css</file>
     </qresource>
     <qresource prefix="/editor/javascripts">
         <file alias="prototype.js">res/editor/javascripts/prototype.js</file>
-        <file alias="note.js">res/editor/javascripts/note.js</file>
         <file alias="utility.js">res/editor/javascripts/utility.js</file>
+        <file alias="page.js">res/editor/javascripts/page.js</file>
     </qresource>
 </RCC>

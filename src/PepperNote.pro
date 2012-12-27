@@ -53,9 +53,9 @@ RESOURCES += \
     notes.qrc
 
 OTHER_FILES += \
-    res/editor/html/note.html \
-    res/editor/html/new_note.html \
-    res/editor/css/note.css \
-    res/editor/javascripts/note.js \
+    res/editor/html/page.html \
+    res/editor/html/new_page.html \
+    res/editor/css/page.css \
+    res/editor/javascripts/page.js \
     res/editor/javascripts/utility.js \
     res/editor/javascripts/prototype.js

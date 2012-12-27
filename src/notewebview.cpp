@@ -218,7 +218,7 @@ void NoteWebView::showCurrentPage()
             SLOT(setNoteContent())
             );
 
-    QString docHtml = getFileUtf8(":/editor/html/note.html");
+    QString docHtml = getFileUtf8(":/editor/html/page.html");
     this->setHtml(docHtml, QUrl("qrc:/editor/"));
     // As a consequence of setHtml,
     // setNoteContent() slot will show the note contents
