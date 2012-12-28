@@ -79,8 +79,10 @@ function pageLoaded() {
     if (pageTitleElement) {
         // Check to see if the #page_title should be updated from the default
         // page template by checking for this global variable
-        if (typeof initialPageTitle !== 'undefined')
+        if (typeof initialPageTitle !== 'undefined' && initialPageTitle) {
             pageTitleElement.update(initialPageTitle);
+            initialPageTitle = null;
+        }
 
         pageTitleElement.observe('DOMCharacterDataModified', notifyTitleChange);
     }
