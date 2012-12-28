@@ -49,7 +49,7 @@ NotebookPage* NoteWebView::getCurrentPage()
 
 void NoteWebView::setPage(Notebook& notebook, NotebookPage& page)
 {
-    if (this->currentPage)
+    if (this->currentPage && this->saveTimerInProgress)
     {
         // TODO:  Disk IO in event thread... offload to separate IO thread
 
@@ -57,6 +57,7 @@ void NoteWebView::setPage(Notebook& notebook, NotebookPage& page)
         this->savePage();
         // Forget next scheduled auto-save
         this->elapsedSave.invalidate();
+        this->saveTimerInProgress = false;
     }
 
     this->currentNotebook = &notebook;
@@ -109,6 +110,9 @@ void NoteWebView::noteChanged()
 
 void NoteWebView::checkSaveNote()
 {
+    if (this->saveTimerInProgress == false)
+        return; // Someone canceled the timer
+
     if (this->elapsedSave.isValid() == false ||
         this->elapsedSave.elapsed() > DEFAULT_SAVE_INTERVAL)
     {
