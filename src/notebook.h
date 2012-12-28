@@ -36,6 +36,8 @@ public:
 
     void savePage(NotebookPage& page, const QString& html);
 
+    void movePage(NotebookPage& page, int places);
+
 signals:
 
     void pageAdded(const QString& section, NotebookPage* page);

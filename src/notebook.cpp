@@ -114,6 +114,25 @@ void Notebook::savePage(NotebookPage& page, const QString& html)
     }
 }
 
+void Notebook::movePage(NotebookPage& page, int places)
+{
+    for (Section& section : this->sections)
+    {
+        int index = section.pages.indexOf(&page);
+        if (index >= 0)
+        {
+            int newIndex = index + places;
+            if (newIndex < 0)
+                newIndex = 0;
+            section.pages.move(index, newIndex);
+
+            this->fileFormat->movePage(page, places);
+
+            return;
+        }
+    }
+}
+
 Notebook::Section& Notebook::findOrCreateSection(const QString& sectionName)
 {
     for (Section& section : this->sections)

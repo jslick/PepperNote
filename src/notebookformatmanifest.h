@@ -89,6 +89,15 @@ public:
      */
     void setPageName(const QString& pageId, const QString& pageName);
 
+    /**
+     * @brief Reorder a page within its section in the manifest
+     *
+     * @param pageId    ID of the page to move
+     * @param places    The number of places to move.  Negative value to move up.
+     * @pre `places` should move the page to a valid index.
+     */
+    void movePage(const QString& pageId, int places);
+
 signals:
 
 public slots:

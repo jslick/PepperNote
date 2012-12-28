@@ -10,6 +10,7 @@
 #include <QTreeWidget>
 
 #include <QHash>
+#include <QMenu>
 
 class Notebook;
 class NotebookPage;
@@ -31,8 +32,31 @@ public slots:
 
     void selectPage(Notebook* notebook, NotebookPage* page);
 
+protected:
+
+    void contextMenuEvent(QContextMenuEvent* event);
+
+private slots:
+
+    void movePageUp();
+    void movePageDown();
+
 private:
+
+    enum MovePageDirection {
+        MovePageUp   = -1,
+        MovePageDown = 1
+    };
+
+    void movePage(MovePageDirection direction);
+
+    void selectItem(QTreeWidgetItem* item);
+
     QHash<Notebook*,TreeNotebookItem*> notebookTreeItems;
+    QMenu pageContextMenu;
+    QAction* movePageUpAction;
+    QAction* movePageDownAction;
+
 };
 
 #endif // NOTEBOOKTREE_H

@@ -100,6 +100,15 @@ public:
      */
     virtual void savePage(NotebookPage& page, const QString& html) = 0;
 
+    /**
+     * @brief Reorder a page within its section in the notebook
+     *
+     * @param page      The page to move
+     * @param places    The number of places to move.  Negative value to move up.
+     * @pre `places` should move the page to a valid index.
+     */
+    virtual void movePage(NotebookPage& page, int places) = 0;
+
 signals:
 
 public slots:

@@ -65,6 +65,8 @@ public:
 
     virtual void savePage(NotebookPage& page, const QString& html);
 
+    virtual void movePage(NotebookPage& page, int places);
+
     void saveManifest();
 
 signals:

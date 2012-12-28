@@ -29,6 +29,7 @@ SOURCES += main.cpp \
         notebooktree.cpp \
         treenotebookitem.cpp \
         treenotebookpageitem.cpp \
+        lambdaguard.cpp \
         ../contrib/qt-json/json.cpp
 
 HEADERS  += mainwindow.h \
@@ -45,6 +46,7 @@ HEADERS  += mainwindow.h \
         treenotebookitem.h \
         treenotebookpageitem.h \
         notebookexception.h \
+        lambdaguard.h \
         ../contrib/qt-json/json.h
 
 FORMS    += mainwindow.ui

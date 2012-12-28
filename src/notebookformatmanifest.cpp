@@ -179,6 +179,31 @@ void NotebookFormatManifest::setPageName(const QString& pageId, const QString& p
     page->name = pageName;
 }
 
+void NotebookFormatManifest::movePage(const QString& pageId, int places)
+{
+    auto it = this->pageIndex.find(pageId);
+    if (it == this->pageIndex.end())
+        throw NotebookException("Cannot move page in manifest:  Page with id " % pageId % " cannot be found");
+
+    Page* page = *it;
+    Q_ASSERT(page);
+
+    for (Section& section : this->sections)
+    {
+        int index = section.pages.indexOf(page);
+        if (index >= 0)
+        {
+            int newIndex = index + places;
+            if (newIndex < 0)
+                newIndex = 0;
+
+            section.pages.move(index, newIndex);
+
+            return;
+        }
+    }
+}
+
 NotebookFormatManifest::Section& NotebookFormatManifest::findOrCreateSection(const QString& sectionName)
 {
     Section* section = this->sectionIndex[sectionName];

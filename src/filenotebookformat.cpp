@@ -110,6 +110,12 @@ void FileNotebookFormat::savePage(NotebookPage& page, const QString& html)
     pageFile.close();
 }
 
+void FileNotebookFormat::movePage(NotebookPage& page, int places)
+{
+    this->manifest.movePage(page.getId(), places);
+    this->saveManifest();
+}
+
 void FileNotebookFormat::saveManifest()
 {
     const QString serializedManifest = this->manifest.serialize();

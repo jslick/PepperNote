@@ -12,11 +12,12 @@
 class QDir;
 class QComboBox;
 class QFontComboBox;
+class QMenu;
+class QTreeWidgetItem;
+
 class Notebook;
 class JavascriptApi;
-class QMenu;
 class NotebookTree;
-class QTreeWidgetItem;
 class NoteWebView;
 
 namespace Ui {
