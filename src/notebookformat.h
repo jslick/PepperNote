@@ -109,6 +109,14 @@ public:
      */
     virtual void movePage(NotebookPage& page, int places) = 0;
 
+    /**
+     * @brief Move a page to another section in a notebook
+     *
+     * @param page
+     * @param sectionName
+     */
+    virtual void movePageToSection(NotebookPage& page, const QString& sectionName) = 0;
+
 signals:
 
 public slots:

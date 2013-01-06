@@ -13,7 +13,7 @@
 #include <QObject>
 
 TreeNotebookItem::TreeNotebookItem(Notebook& notebook) :
-    QTreeWidgetItem(), notebook(notebook)
+    QObject(), QTreeWidgetItem(QTreeWidgetItem::Type), notebook(notebook)
 {
     this->setText(0, QObject::tr("Notebook")); // TODO:  Notebook::getTitle()
 
@@ -29,6 +29,10 @@ TreeNotebookItem::TreeNotebookItem(Notebook& notebook) :
             this->addPageToSectionItem(*sectionItem, *page);
         }
     }
+
+    connect(&this->notebook, SIGNAL(pageMoved(NotebookPage*,QString,int)),
+            SLOT(updatePageItem(NotebookPage*,QString,int))
+            );
 }
 
 void TreeNotebookItem::getPathToPage(NotebookPage& page, QTreeWidgetItem*& sectionTree, TreeNotebookPageItem*& pageNode)
@@ -46,6 +50,26 @@ void TreeNotebookItem::addPageItem(const QString& sectionName, NotebookPage& pag
 {
     QTreeWidgetItem& sectionItem = this->findOrCreateSectionItem(sectionName);
     this->addPageToSectionItem(sectionItem, page);
+}
+
+void TreeNotebookItem::updatePageItem(NotebookPage* page, QString sectionName, int index)
+{
+    Q_ASSERT(page);
+
+    QTreeWidgetItem* sectionTree = 0;
+    TreeNotebookPageItem* pageNode = 0;
+    this->getPathToPage(*page, sectionTree, pageNode);
+    Q_ASSERT(sectionTree);
+    Q_ASSERT(pageNode);
+
+    QTreeWidgetItem& newSectionTree = this->findOrCreateSectionItem(sectionName);
+
+    sectionTree->removeChild(pageNode);
+    newSectionTree.insertChild(index, pageNode);
+    // update tree path index
+    this->sectionTrees[page].first = &newSectionTree;
+
+    // TODO:  Prevent change of selection when moving nodes
 }
 
 QTreeWidgetItem& TreeNotebookItem::findOrCreateSectionItem(const QString& sectionName)

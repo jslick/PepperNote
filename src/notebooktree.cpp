@@ -16,8 +16,24 @@
 #include <QMenu>
 #include <QContextMenuEvent>
 
+class MoveToSectionAction : public QAction
+{
+    Q_OBJECT
+public:
+    Notebook&       notebook;
+    QString         sectionName;
+    NotebookPage&   page;
+
+    MoveToSectionAction(Notebook& notebook, const QString& sectionName, NotebookPage& page, QWidget* parent = 0)
+        : QAction(sectionName, parent),
+          notebook(notebook), sectionName(sectionName), page(page)
+    { }
+};
+#include "notebooktree.moc"
+
 NotebookTree::NotebookTree(QWidget* parent) :
-    QTreeWidget(parent)
+    QTreeWidget(parent),
+    moveToSectionMenu(tr("Move to section"))
 {
     this->setColumnCount(1);
     this->header()->hide();
@@ -32,6 +48,11 @@ NotebookTree::NotebookTree(QWidget* parent) :
             );
     this->pageContextMenu.addAction(movePageUpAction);
     this->pageContextMenu.addAction(movePageDownAction);
+    this->pageContextMenu.addSeparator();
+    this->pageContextMenu.addMenu(&this->moveToSectionMenu);
+    connect(&this->moveToSectionMenu, SIGNAL(triggered(QAction*)),
+            SLOT(movePageToSection(QAction*))
+            );
 }
 
 void NotebookTree::addNotebook(Notebook& notebook)
@@ -85,14 +106,27 @@ void NotebookTree::contextMenuEvent(QContextMenuEvent* event)
     if (selectedList.length() >= 1)
     {
         QTreeWidgetItem* selected = selectedList.at(0);
-        if (dynamic_cast<TreeNotebookPageItem*>( selected ))
+        if (TreeNotebookPageItem* selectedPageItem = dynamic_cast<TreeNotebookPageItem*>( selected ))
         {
             // Disable actions on boundaries
             QTreeWidgetItem* selectedParent = selected->parent();
             Q_ASSERT(selectedParent);
+
+            Notebook& notebook = selectedPageItem->getNotebook();
+            NotebookPage& notebookPage = selectedPageItem->getNotebookPage();
+
             int index = selectedParent->indexOfChild(selected);
             this->movePageUpAction->setEnabled(index > 0);
             this->movePageDownAction->setEnabled(index < selectedParent->childCount() - 1);
+
+            // Populate Move to Section menu
+            this->moveToSectionMenu.clear();
+            QStringList sectionNames = notebook.getSectionNames();
+            for (const QString& sectionName : sectionNames)
+            {
+                MoveToSectionAction* action = new MoveToSectionAction(notebook, sectionName, notebookPage);
+                this->moveToSectionMenu.addAction(action);
+            }
 
             this->pageContextMenu.exec(event->globalPos());
         }
@@ -111,48 +145,23 @@ void NotebookTree::movePageDown()
     this->movePage(NotebookTree::MovePageDown);
 }
 
+void NotebookTree::movePageToSection(QAction* action)
+{
+    Q_ASSERT(action);
+
+    MoveToSectionAction* moveAction = dynamic_cast<MoveToSectionAction*>( action );
+    Q_ASSERT(moveAction);
+
+    moveAction->notebook.movePageToSection(moveAction->page, moveAction->sectionName);
+}
+
 void NotebookTree::movePage(NotebookTree::MovePageDirection direction)
 {
+
     QList<QTreeWidgetItem*> selectedList = this->selectedItems();
     if (selectedList.length() >= 1)
     {
-        this->blockSignals(true);   // Don't change page when deselecting item
-        LambdaGuard unblockSignals([this]{ // RAII:  Unblock signals, even on returns and exceptions
-            this->blockSignals(false);
-        });
-        Q_UNUSED(unblockSignals); // until GCC 4.8.0 - http://gcc.gnu.org/bugzilla/show_bug.cgi?id=10416#c13
-
         QTreeWidgetItem* selected = selectedList.at(0);
-        QTreeWidgetItem* selectedParent = selected->parent();
-        if (!selectedParent)
-            return;
-
-        int index = selectedParent->indexOfChild(selected);
-
-        switch (direction)
-        {
-        case NotebookTree::MovePageUp:
-            if (index <= 0)
-                return;
-            index--;
-            break;
-
-        case NotebookTree::MovePageDown:
-            if (index >= selectedParent->childCount() - 1)
-                return;
-            index++;
-            break;
-        }
-        Q_ASSERT(index >= 0);
-
-        // Move item
-        selectedParent->removeChild(selected);
-        selectedParent->insertChild(index, selected);
-        this->selectItem(selected);
-
-        unblockSignals.doNow();
-
-        // Let the Notebook know that pages were swapped
         if (TreeNotebookPageItem* pageItem = dynamic_cast<TreeNotebookPageItem*>( selected ))
             pageItem->getNotebook().movePage(pageItem->getNotebookPage(), direction);
     }

@@ -40,6 +40,7 @@ private slots:
 
     void movePageUp();
     void movePageDown();
+    void movePageToSection(QAction* action);
 
 private:
 
@@ -53,9 +54,12 @@ private:
     void selectItem(QTreeWidgetItem* item);
 
     QHash<Notebook*,TreeNotebookItem*> notebookTreeItems;
-    QMenu pageContextMenu;
-    QAction* movePageUpAction;
-    QAction* movePageDownAction;
+
+    // Context menu stuff
+    QMenu       pageContextMenu;
+    QAction*    movePageUpAction;
+    QAction*    movePageDownAction;
+    QMenu       moveToSectionMenu;
 
 };
 

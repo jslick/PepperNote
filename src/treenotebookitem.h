@@ -21,8 +21,9 @@ class TreeNotebookPageItem;
  *  ** Notebook section
  *  *** Notebook page
  */
-class TreeNotebookItem : public QTreeWidgetItem
+class TreeNotebookItem : public QObject, public QTreeWidgetItem
 {
+    Q_OBJECT
 public:
     explicit TreeNotebookItem(Notebook& notebook);
 
@@ -48,6 +49,11 @@ public:
 signals:
 
 public slots:
+
+private slots:
+
+    // Move items when they are moved in the Notebook
+    void updatePageItem(NotebookPage* page, QString sectionName, int index);
 
 private:
 

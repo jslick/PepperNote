@@ -202,6 +202,41 @@ void NotebookFormatManifest::movePage(const QString& pageId, int places)
             return;
         }
     }
+
+    throw NotebookException("Cannot move page in manifest:  Could not find section for page with id " % pageId);
+}
+
+void NotebookFormatManifest::movePageToSection(const QString& pageId, const QString& sectionName)
+{
+    Page* page = ([&]()->Page* {
+        auto it = this->pageIndex.find(pageId);
+        if (it == this->pageIndex.end())
+            throw NotebookException("Cannot move page in manifest:  Page with id " % pageId % " cannot be found");
+
+        return *it;
+    })();
+    Q_ASSERT(page);
+
+    Section* newSection = ([&]()->Section* {
+        auto it = this->sectionIndex.find(sectionName);
+        if (it == this->sectionIndex.end())
+            throw NotebookException("Cannot move page in manifest:  Section does not exist:  " % sectionName);
+        Q_ASSERT(*it);
+        return *it;
+    })();
+    Q_ASSERT(newSection);
+
+    for (Section& section : this->sections)
+    {
+        int index = section.pages.indexOf(page);
+        if (index >= 0)
+        {
+            section.pages.removeAt(index);
+            break;
+        }
+    }
+
+    newSection->pages.append(page);
 }
 
 NotebookFormatManifest::Section& NotebookFormatManifest::findOrCreateSection(const QString& sectionName)

@@ -86,9 +86,18 @@ public:
      */
     void movePage(NotebookPage& page, int places);
 
+    /**
+     * @brief Moves a page to the end of another section
+     *
+     * @param page
+     * @param sectionName
+     */
+    void movePageToSection(NotebookPage& page, const QString& sectionName);
+
 signals:
 
-    void pageAdded(const QString& section, NotebookPage* page);
+    void pageAdded(QString section, NotebookPage* page);
+    void pageMoved(NotebookPage* page, QString sectionName, int index);
 
 public slots:
 
@@ -97,6 +106,10 @@ private:
         QString                 name;
         QList<NotebookPage*>    pages;
     } Section;
+
+    Section* findSection(const QString& sectionName);
+
+    Section* findSection(NotebookPage& page);
 
     Section& findOrCreateSection(const QString& sectionName);
 

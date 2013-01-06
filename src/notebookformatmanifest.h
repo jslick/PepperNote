@@ -98,6 +98,15 @@ public:
      */
     void movePage(const QString& pageId, int places);
 
+    /**
+     * @brief Move a page to the end of another section in the manifest
+     *
+     * @param pageId
+     * @param sectionName
+     * @pre Section should already exist
+     */
+    void movePageToSection(const QString& pageId, const QString& sectionName);
+
 signals:
 
 public slots:

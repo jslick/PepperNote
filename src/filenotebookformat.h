@@ -67,6 +67,8 @@ public:
 
     virtual void movePage(NotebookPage& page, int places);
 
+    virtual void movePageToSection(NotebookPage& page, const QString& sectionName);
+
     void saveManifest();
 
 signals:

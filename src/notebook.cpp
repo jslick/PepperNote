@@ -128,18 +128,57 @@ void Notebook::movePage(NotebookPage& page, int places)
 
             this->fileFormat->movePage(page, places);
 
+            emit pageMoved(&page, section.name, newIndex);
             return;
         }
     }
 }
 
-Notebook::Section& Notebook::findOrCreateSection(const QString& sectionName)
+void Notebook::movePageToSection(NotebookPage& page, const QString& sectionName)
+{
+    Section* oldSection = this->findSection(page);
+    Section* newSection = this->findSection(sectionName);
+    if (!newSection)
+        throw NotebookException("Could not page to section; section not found");
+
+    if (oldSection)
+        oldSection->pages.removeOne(&page);
+
+    newSection->pages.append(&page);
+
+    if (this->fileFormat->isPagePersisted(page.getId()))
+        this->fileFormat->movePageToSection(page, sectionName);
+
+    emit pageMoved(&page, sectionName, newSection->pages.length() - 1);
+}
+
+Notebook::Section* Notebook::findSection(const QString& sectionName)
+{
+    for (Section& section: this->sections)
+    {
+        if (section.name == sectionName)
+            return &section;
+    }
+
+    return 0;
+}
+
+Notebook::Section* Notebook::findSection(NotebookPage& page)
 {
     for (Section& section : this->sections)
     {
-        if (section.name == sectionName)
-            return section;
+        if (section.pages.contains(&page))
+            return &section;
     }
+
+    return 0;
+}
+
+Notebook::Section& Notebook::findOrCreateSection(const QString& sectionName)
+{
+    Section* section = this->findSection(sectionName);
+    if (section)
+        return *section;
 
     Section newSection;
     newSection.name = sectionName;
