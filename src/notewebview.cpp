@@ -49,7 +49,7 @@ NotebookPage* NoteWebView::getCurrentPage()
 
 void NoteWebView::setPage(Notebook& notebook, NotebookPage& page)
 {
-    if (this->currentPage && this->saveTimerInProgress)
+    if (this->currentPage && (this->saveTimerInProgress || !this->currentNotebook->isPagePersisted(this->currentPage->getId())))
     {
         // TODO:  Disk IO in event thread... offload to separate IO thread
 
