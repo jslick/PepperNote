@@ -33,6 +33,7 @@ signals:
     void fontChanged(const QString& fontFamily, int fontSize);
 
 public slots:
+    void savePage();        // Saves the view HTML to the current page
     void closing();
     void toggleDevTools();
 
@@ -44,7 +45,6 @@ private slots:
     void checkSaveNote();   // Check to see if it is time to save the current note
 
     void setNoteContent();  // Sets the contenteditable div contents after the document is loaded
-    void savePage();        // Saves the view HTML to the current page
 
 private:
     void initActions();

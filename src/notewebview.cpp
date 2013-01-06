@@ -65,6 +65,28 @@ void NoteWebView::setPage(Notebook& notebook, NotebookPage& page)
     this->showCurrentPage();
 }
 
+void NoteWebView::savePage()
+{
+    qDebug() << '[' << QTime::currentTime() << "] Saving note";
+
+    Q_ASSERT(this->currentNotebook);
+    Q_ASSERT(this->currentPage);
+
+    QWebElement contentElement = this->page()->mainFrame()->findFirstElement("#page_content");
+    QString contentHtml = contentElement.toInnerXml();
+    try
+    {
+        this->currentNotebook->savePage(*this->currentPage, contentHtml);
+
+        this->elapsedSave.restart();    // Delay next auto-save
+    }
+    catch (NotebookException& e)
+    {
+        Q_UNUSED(e);
+        showMessage(tr("Unable to save page"));
+    }
+}
+
 void NoteWebView::closing()
 {
     if (this->inspector)
@@ -149,28 +171,6 @@ void NoteWebView::setNoteContent()
     this->evaluateJavaScript("setTimeout(pageLoaded, 0)");
 
     emit pageChanged(this->currentNotebook, this->currentPage);
-}
-
-void NoteWebView::savePage()
-{
-    qDebug() << '[' << QTime::currentTime() << "] Saving note";
-
-    Q_ASSERT(this->currentNotebook);
-    Q_ASSERT(this->currentPage);
-
-    QWebElement contentElement = this->page()->mainFrame()->findFirstElement("#page_content");
-    QString contentHtml = contentElement.toInnerXml();
-    try
-    {
-        this->currentNotebook->savePage(*this->currentPage, contentHtml);
-
-        this->elapsedSave.restart();    // Delay next auto-save
-    }
-    catch (NotebookException& e)
-    {
-        Q_UNUSED(e);
-        showMessage(tr("Unable to save page"));
-    }
 }
 
 void NoteWebView::initActions()
