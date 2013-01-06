@@ -270,12 +270,20 @@ void MainWindow::showLoadedNotebook(Notebook* notebook)
 
 void MainWindow::createNewPage()
 {
-    // TODO:  New page goes in currently selected section (or "General")
-    // Also, new page goes in currently selected notebook
+    // Get the section that the current page is in.  The new page will initially
+    // belong to the same section as the current open note.
+    Notebook* selectedPageNotebook = 0;
+    NotebookPage* selectedPage = 0;
+    this->webView->getCurrentPage(selectedPageNotebook, selectedPage);
+    Q_ASSERT(selectedPageNotebook);
+    Q_ASSERT(selectedPage);
+    QString currentSection = selectedPageNotebook->getPageSection(*selectedPage);
+
+    QString newPageSection = currentSection.isEmpty() ? "General" : currentSection;
 
     NotebookPage* newPage = new NotebookPage("", tr("New Note"));
-    this->loadedNotebooks[0]->addPage("General", newPage);
-    this->notebookTree->addPageItem(*this->loadedNotebooks[0], "General", *newPage);
+    this->loadedNotebooks[0]->addPage(newPageSection, newPage);
+    this->notebookTree->addPageItem(*this->loadedNotebooks[0], newPageSection, *newPage);
     this->webView->setPage(*this->loadedNotebooks[0], *newPage);
 }
 

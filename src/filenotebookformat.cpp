@@ -68,7 +68,7 @@ QString FileNotebookFormat::getPageContents(const QString& pageId) const
     }
 }
 
-void FileNotebookFormat::savePage(NotebookPage& page, const QString& html)
+void FileNotebookFormat::savePage(Notebook& notebook, NotebookPage& page, const QString& html)
 {
     QDir notebookDir(this->filename);
     if (notebookDir.exists() == false)
@@ -97,7 +97,7 @@ void FileNotebookFormat::savePage(NotebookPage& page, const QString& html)
     // manifest.
     if (!this->manifest.containsPage(page.getId()))
     {
-        this->manifest.addPage("General", page.getId(), page.getName());
+        this->manifest.addPage(notebook.getPageSection(page), page.getId(), page.getName());
         this->saveManifest();
     }
     // Check to see if page name needs to be updated in manifest

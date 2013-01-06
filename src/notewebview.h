@@ -25,6 +25,8 @@ public:
 
     NotebookPage* getCurrentPage();
 
+    void getCurrentPage(Notebook*& notebook, NotebookPage*& page);
+
     void setPage(Notebook& notebook, NotebookPage& page);
 
 signals:

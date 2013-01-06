@@ -104,14 +104,19 @@ void Notebook::savePage(NotebookPage& page, const QString& html)
 
     try
     {
-        this->fileFormat->savePage(page, html);
+        this->fileFormat->savePage(*this, page, html);
     }
     catch (QtConcurrent::Exception& e)
     {
         Q_UNUSED(e);
-
         throw NotebookException("Could not save page");
     }
+}
+
+QString Notebook::getPageSection(const NotebookPage& page) const
+{
+    const Section* section = this->findSection(page);
+    return section ? section->name : "";
 }
 
 void Notebook::movePage(NotebookPage& page, int places)
@@ -163,11 +168,22 @@ Notebook::Section* Notebook::findSection(const QString& sectionName)
     return 0;
 }
 
-Notebook::Section* Notebook::findSection(NotebookPage& page)
+Notebook::Section* Notebook::findSection(const NotebookPage& page)
 {
     for (Section& section : this->sections)
     {
-        if (section.pages.contains(&page))
+        if (section.pages.contains(const_cast<NotebookPage*>( &page )))
+            return &section;
+    }
+
+    return 0;
+}
+
+const Notebook::Section* Notebook::findSection(const NotebookPage& page) const
+{
+    for (const Section& section : this->sections)
+    {
+        if (section.pages.contains(const_cast<NotebookPage*>( &page )))
             return &section;
     }
 

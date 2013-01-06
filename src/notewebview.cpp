@@ -47,6 +47,12 @@ NotebookPage* NoteWebView::getCurrentPage()
     return this->currentPage;
 }
 
+void NoteWebView::getCurrentPage(Notebook*& notebook, NotebookPage*& page)
+{
+    notebook = this->currentNotebook;
+    page = this->currentPage;
+}
+
 void NoteWebView::setPage(Notebook& notebook, NotebookPage& page)
 {
     if (this->currentPage && (this->saveTimerInProgress || !this->currentNotebook->isPagePersisted(this->currentPage->getId())))

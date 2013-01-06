@@ -63,7 +63,7 @@ public:
 
     virtual QString getPageContents(const QString& pageId) const;
 
-    virtual void savePage(NotebookPage& page, const QString& html);
+    virtual void savePage(Notebook& notebook, NotebookPage& page, const QString& html);
 
     virtual void movePage(NotebookPage& page, int places);
 

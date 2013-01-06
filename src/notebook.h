@@ -78,6 +78,12 @@ public:
     void savePage(NotebookPage& page, const QString& html);
 
     /**
+     * @param page
+     * @return Name of section that the page belongs to
+     */
+    QString getPageSection(const NotebookPage& page) const;
+
+    /**
      * @brief Move a page within a section
      *
      * @param page
@@ -109,7 +115,9 @@ private:
 
     Section* findSection(const QString& sectionName);
 
-    Section* findSection(NotebookPage& page);
+    Section* findSection(const NotebookPage& page);
+
+    const Section* findSection(const NotebookPage& page) const;
 
     Section& findOrCreateSection(const QString& sectionName);
 

@@ -93,12 +93,13 @@ public:
     /**
      * @brief Save a Notebook page to disk
      *
-     * @param page  The page to save
-     * @param html  The HTML content of the page to save
+     * @param notebook  The Notebook that the page belongs to
+     * @param page      The page to save
+     * @param html      The HTML content of the page to save
      *
      * @note The page can be new or persisted.
      */
-    virtual void savePage(NotebookPage& page, const QString& html) = 0;
+    virtual void savePage(Notebook& notebook, NotebookPage& page, const QString& html) = 0;
 
     /**
      * @brief Reorder a page within its section in the notebook
