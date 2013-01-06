@@ -16,26 +16,74 @@ class Notebook : public QObject
 {
     Q_OBJECT
 public:
+    /**
+     * @param fileFormat    The NotebookFormat used to save this notebook
+     * @param parent        Parent QObject.  Can be NULL.
+     */
     explicit Notebook(NotebookFormat* fileFormat, QObject* parent = 0);
 
     ~Notebook();
 
+    /**
+     * @param pageId
+     * @return True if the page is persisted to disk
+     */
     bool isPagePersisted(const QString& pageId) const;
 
+    /**
+     * @return The names of all sections in the notebook, in order.
+     */
     QStringList getSectionNames() const;
 
+    /**
+     * @return All pages in the given section, in order
+     */
     QList<NotebookPage*> getPages(const QString& sectionName) const;
 
+    /**
+     * @return The first page from the first section in the notebook.  NULL if
+     *         there are no sections in the notebook.
+     */
     NotebookPage* getFirstPage();
 
+    /**
+     * @param page
+     * @return The persisted HTML contents of the page
+     */
     QString getPageContents(NotebookPage& page) const;
 
+    /**
+     * @param pageId
+     * @return The persisted HTML contents of the page
+     */
     QString getPageContents(const QString& pageId) const;
 
+    /**
+     * @brief Adds the given page to the notebook
+     *
+     * @param sectionName
+     * @param page
+     *
+     * @note This method does not save anything to the disk.
+     * @note emits void pageAdded(QString section, NotebookPage* page).
+     */
     void addPage(const QString& sectionName, NotebookPage* page);
 
+    /**
+     * @brief Saves the page to disk
+     *
+     * @param page
+     * @param html  The HTML contents of the note
+     */
     void savePage(NotebookPage& page, const QString& html);
 
+    /**
+     * @brief Move a page within a section
+     *
+     * @param page
+     * @param places    Number of places to move a page.  Negative numbers will
+     *                  move the page u.
+     */
     void movePage(NotebookPage& page, int places);
 
 signals:
