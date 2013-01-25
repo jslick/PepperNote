@@ -69,6 +69,8 @@ public:
 
     virtual void movePageToSection(NotebookPage& page, const QString& sectionName);
 
+    virtual void removePage(const QString& sectionName, NotebookPage& page);
+
     void saveManifest();
 
 signals:

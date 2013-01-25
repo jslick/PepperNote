@@ -107,6 +107,14 @@ public:
      */
     void movePageToSection(const QString& pageId, const QString& sectionName);
 
+    /**
+     * @brief Remove a page from a section
+     *
+     * @param sectionName
+     * @param pageId
+     */
+    void removePage(const QString& sectionName, const QString& pageId);
+
 signals:
 
 public slots:

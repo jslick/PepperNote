@@ -157,6 +157,19 @@ void Notebook::movePageToSection(NotebookPage& page, const QString& sectionName)
     emit pageMoved(&page, sectionName, newSection->pages.length() - 1);
 }
 
+void Notebook::removePage(const QString& sectionName, NotebookPage& page)
+{
+    Section* section = this->findSection(sectionName);
+    if (!section)
+        throw NotebookException("Cannot remove page from section:  Section not found");
+
+    section->pages.removeAll(&page);
+
+    this->fileFormat->removePage(sectionName, page);
+
+    emit pageRemoved(sectionName, &page);
+}
+
 Notebook::Section* Notebook::findSection(const QString& sectionName)
 {
     for (Section& section: this->sections)

@@ -93,17 +93,26 @@ public:
     void movePage(NotebookPage& page, int places);
 
     /**
-     * @brief Moves a page to the end of another section
+     * @brief Move a page to the end of another section
      *
      * @param page
      * @param sectionName
      */
     void movePageToSection(NotebookPage& page, const QString& sectionName);
 
+    /**
+     * @brief Remove a page from a scetion; updates disk to remove page
+     *
+     * @param sectionName
+     * @param page
+     */
+    void removePage(const QString& sectionName, NotebookPage& page);
+
 signals:
 
     void pageAdded(QString section, NotebookPage* page);
     void pageMoved(NotebookPage* page, QString sectionName, int index);
+    void pageRemoved(QString section, NotebookPage* page);
 
 public slots:
 

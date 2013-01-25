@@ -239,6 +239,24 @@ void NotebookFormatManifest::movePageToSection(const QString& pageId, const QStr
     newSection->pages.append(page);
 }
 
+void NotebookFormatManifest::removePage(const QString& sectionName, const QString& pageId)
+{
+    Section* section = this->sectionIndex[sectionName];
+    if (!section)
+        throw NotebookException("Cannot remove page; section does not exist");
+
+    for (Page* page : section->pages)
+    {
+        Q_ASSERT(page);
+
+        if (page->id == pageId)
+        {
+            section->pages.removeOne(page);
+            this->pageIndex.remove(pageId);
+        }
+    }
+}
+
 NotebookFormatManifest::Section& NotebookFormatManifest::findOrCreateSection(const QString& sectionName)
 {
     Section* section = this->sectionIndex[sectionName];

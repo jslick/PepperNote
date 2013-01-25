@@ -8,6 +8,7 @@
 
 #include "lambdaguard.h"
 #include "notebook.h"
+#include "notebookpage.h"
 #include "treenotebookitem.h"
 #include "treenotebookpageitem.h"
 #include "notebookexception.h"
@@ -15,6 +16,7 @@
 #include <QHeaderView>
 #include <QMenu>
 #include <QContextMenuEvent>
+#include <QMessageBox>
 
 class MoveToSectionAction : public QAction
 {
@@ -38,20 +40,26 @@ NotebookTree::NotebookTree(QWidget* parent) :
     this->setColumnCount(1);
     this->header()->hide();
 
-    movePageUpAction = new QAction(QObject::tr("Move Up"), this);
-    movePageDownAction = new QAction(QObject::tr("Move Down"), this);
-    connect(movePageUpAction, SIGNAL(triggered()),
+    this->movePageUpAction = new QAction(QObject::tr("Move Up"), this);
+    this->movePageDownAction = new QAction(QObject::tr("Move Down"), this);
+    connect(this->movePageUpAction, SIGNAL(triggered()),
             SLOT(movePageUp())
             );
-    connect(movePageDownAction, SIGNAL(triggered()),
+    connect(this->movePageDownAction, SIGNAL(triggered()),
             SLOT(movePageDown())
             );
-    this->pageContextMenu.addAction(movePageUpAction);
-    this->pageContextMenu.addAction(movePageDownAction);
+    this->pageContextMenu.addAction(this->movePageUpAction);
+    this->pageContextMenu.addAction(this->movePageDownAction);
     this->pageContextMenu.addSeparator();
     this->pageContextMenu.addMenu(&this->moveToSectionMenu);
     connect(&this->moveToSectionMenu, SIGNAL(triggered(QAction*)),
             SLOT(movePageToSection(QAction*))
+            );
+    this->deletePageAction = new QAction(QObject::tr("Delete Page"), this);
+    this->pageContextMenu.addSeparator();
+    this->pageContextMenu.addAction(this->deletePageAction);
+    connect(this->deletePageAction, SIGNAL(triggered()),
+            SLOT(deletePageConfirmation())
             );
 }
 
@@ -153,6 +161,30 @@ void NotebookTree::movePageToSection(QAction* action)
     Q_ASSERT(moveAction);
 
     moveAction->notebook.movePageToSection(moveAction->page, moveAction->sectionName);
+}
+
+void NotebookTree::deletePageConfirmation()
+{
+    QList<QTreeWidgetItem*> selectedList = this->selectedItems();
+    if (selectedList.length() < 1)
+        return;
+
+    QTreeWidgetItem* selected = selectedList.at(0);
+    TreeNotebookPageItem* pageItem = dynamic_cast<TreeNotebookPageItem*>( selected );
+    if (!pageItem)
+        return;
+
+    NotebookPage& page = pageItem->getNotebookPage();
+    const QString sectionName = pageItem->getNotebook().getPageSection(page);
+
+    int retval = QMessageBox::question(
+                     this,
+                     tr("Delete Page"),
+                     tr("Are you sure you want to delete the page %1?").arg(page.getName()),
+                     QMessageBox::Yes | QMessageBox::No
+                     );
+    if (retval == QMessageBox::Yes)
+        pageItem->getNotebook().removePage(sectionName, page);
 }
 
 void NotebookTree::movePage(NotebookTree::MovePageDirection direction)

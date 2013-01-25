@@ -41,6 +41,7 @@ private slots:
     void movePageUp();
     void movePageDown();
     void movePageToSection(QAction* action);
+    void deletePageConfirmation();
 
 private:
 
@@ -60,6 +61,7 @@ private:
     QAction*    movePageUpAction;
     QAction*    movePageDownAction;
     QMenu       moveToSectionMenu;
+    QAction*    deletePageAction;
 
 };
 

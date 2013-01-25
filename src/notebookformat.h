@@ -118,6 +118,14 @@ public:
      */
     virtual void movePageToSection(NotebookPage& page, const QString& sectionName) = 0;
 
+    /**
+     * @brief Remove a page a section
+     *
+     * @param sectionName
+     * @param page
+     */
+    virtual void removePage(const QString& sectionName, NotebookPage& page) = 0;
+
 signals:
 
 public slots:

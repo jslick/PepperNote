@@ -33,6 +33,9 @@ TreeNotebookItem::TreeNotebookItem(Notebook& notebook) :
     connect(&this->notebook, SIGNAL(pageMoved(NotebookPage*,QString,int)),
             SLOT(updatePageItem(NotebookPage*,QString,int))
             );
+    connect(&this->notebook, SIGNAL(pageRemoved(QString,NotebookPage*)),
+            SLOT(removePageItem(QString,NotebookPage*))
+            );
 }
 
 void TreeNotebookItem::getPathToPage(NotebookPage& page, QTreeWidgetItem*& sectionTree, TreeNotebookPageItem*& pageNode)
@@ -70,6 +73,19 @@ void TreeNotebookItem::updatePageItem(NotebookPage* page, QString sectionName, i
     this->sectionTrees[page].first = &newSectionTree;
 
     // TODO:  Prevent change of selection when moving nodes
+}
+
+void TreeNotebookItem::removePageItem(QString sectionName, NotebookPage* page)
+{
+    Q_ASSERT(page);
+
+    QTreeWidgetItem* sectionTree = 0;
+    TreeNotebookPageItem* pageNode = 0;
+    this->getPathToPage(*page, sectionTree, pageNode);
+    Q_ASSERT(sectionTree);
+    Q_ASSERT(pageNode);
+
+    sectionTree->removeChild(pageNode);
 }
 
 QTreeWidgetItem& TreeNotebookItem::findOrCreateSectionItem(const QString& sectionName)

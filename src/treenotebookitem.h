@@ -55,6 +55,9 @@ private slots:
     // Move items when they are moved in the Notebook
     void updatePageItem(NotebookPage* page, QString sectionName, int index);
 
+    // Remove items when they are removed from the Notebook
+    void removePageItem(QString sectionName, NotebookPage* page);
+
 private:
 
     QTreeWidgetItem& findOrCreateSectionItem(const QString& sectionName);
