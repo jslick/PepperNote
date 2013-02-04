@@ -66,9 +66,19 @@ void NoteWebView::setPage(Notebook& notebook, NotebookPage& page)
         this->saveTimerInProgress = false;
     }
 
+    if (this->currentNotebook)
+    {
+        disconnect(this->currentNotebook, SIGNAL(pageRemoved(QString,NotebookPage*)),
+                   this, SLOT(blankEditor())
+                   );
+    }
+
     this->currentNotebook = &notebook;
     this->currentPage = &page;
     this->showCurrentPage();
+    connect(this->currentNotebook, SIGNAL(pageRemoved(QString,NotebookPage*)),
+            SLOT(blankEditor())
+            );
 }
 
 void NoteWebView::savePage()
@@ -93,12 +103,25 @@ void NoteWebView::savePage()
     }
 }
 
+void NoteWebView::blankEditor()
+{
+    this->elapsedSave.invalidate();
+    this->saveTimerInProgress = false;
+
+    QWebElement contentElement = this->page()->mainFrame()->findFirstElement("#page_content");
+    contentElement.setInnerXml("");
+
+    this->currentNotebook = 0;
+    this->currentPage = 0;
+}
+
 void NoteWebView::closing()
 {
     if (this->inspector)
         this->inspector->setVisible(false);
 
-    this->savePage();
+    if (this->currentNotebook)
+        this->savePage();
 }
 
 void NoteWebView::toggleDevTools()

@@ -36,6 +36,7 @@ signals:
 
 public slots:
     void savePage();        // Saves the view HTML to the current page
+    void blankEditor();
     void closing();
     void toggleDevTools();
 
