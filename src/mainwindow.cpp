@@ -23,6 +23,7 @@
 #include <QSettings>
 #include <QDesktopServices>
 #include <QDockWidget>
+#include <QInputDialog>
 #include <QComboBox>
 #include <QFontComboBox>
 #include <QDoubleValidator>
@@ -98,12 +99,20 @@ void MainWindow::closeEvent(QCloseEvent* event)
 void MainWindow::initMenubar()
 {
     this->fileMenu = menuBar()->addMenu(tr("&File"));
+
+    QAction* newSectionAction = new QAction(tr("New Section..."), this);
+    connect(newSectionAction, SIGNAL(triggered()),
+            SLOT(createNewSection())
+            );
+    fileMenu->addAction(newSectionAction);
+
     QAction* newPageAction = new QAction(tr("New Page"), this);
     newPageAction->setShortcut(QKeySequence::New);
     connect(newPageAction, SIGNAL(triggered()),
             SLOT(createNewPage())
             );
     fileMenu->addAction(newPageAction);
+
 }
 
 void MainWindow::initToolbar()
@@ -287,6 +296,41 @@ void MainWindow::createNewPage()
     this->webView->setPage(*this->loadedNotebooks[0], *newPage);
 }
 
+void MainWindow::createNewSection()
+{
+    // Get the section that the current page is in.  The new page will initially
+    // belong to the same section as the current open note.
+    Notebook* selectedPageNotebook = 0;
+    NotebookPage* selectedPage = 0;
+    this->webView->getCurrentPage(selectedPageNotebook, selectedPage);
+    Q_ASSERT(selectedPageNotebook);
+    Q_ASSERT(selectedPage);
+
+    QString newPageSection;
+    do
+    {
+        newPageSection = QInputDialog::getText(
+                    this, tr("New Section"),
+                    tr("Name of new section:")
+                    );
+
+        if (newPageSection.isEmpty())
+            return;
+
+        bool alreadyExists = selectedPageNotebook->getSectionNames().contains(newPageSection);
+        if (alreadyExists)
+            showMessage(tr("A section of that name already exists"));
+        else
+            break;
+    } while (true);
+
+    NotebookPage* newPage = new NotebookPage("", tr("New Note"));
+
+    this->loadedNotebooks[0]->addPage(newPageSection, newPage);
+    this->notebookTree->addPageItem(*this->loadedNotebooks[0], newPageSection, *newPage);
+    this->webView->setPage(*this->loadedNotebooks[0], *newPage);
+}
+
 void MainWindow::switchPage(QTreeWidgetItem* current, QTreeWidgetItem* previous)
 {
     Q_ASSERT(current);
@@ -307,7 +351,7 @@ void MainWindow::setCurrentPageName(QString pageTitle)
     NotebookPage* page = this->webView->getCurrentPage();
     if (!page)
     {
-        showMessage("Cannot set current page title");   // Hope user never never sees this
+        showMessage(tr("Cannot set current page title"));   // Hope user never never sees this
         return;
     }
 

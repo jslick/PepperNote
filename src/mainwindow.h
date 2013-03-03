@@ -53,6 +53,8 @@ private slots:
 
     void createNewPage();
 
+    void createNewSection();
+
     /**
      * @brief Switch to a different page
      *

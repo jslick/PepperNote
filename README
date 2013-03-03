@@ -23,6 +23,7 @@ Existing features:
 * Rename pages
 * Move pages between sections
 * Delete pages
+* Create sections
 
 Partial features:
 * Multiple sections
@@ -33,7 +34,6 @@ Features pending for v1.0 release:
 * Format headings (h1, h2, h3, etc.)
 * Create notebooks
 * Re-arrange notebooks
-* Create sections
 * Rename sections
 * Re-arrange sections
 * Delete sections
