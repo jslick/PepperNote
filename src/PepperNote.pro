@@ -6,6 +6,7 @@
 
 QT       += core gui
 QT       += webkit
+QT       += network
 win32:QMAKE_CXXFLAGS += -std=c++0x
 else:QMAKE_CXXFLAGS += -std=c++11
 

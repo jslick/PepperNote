@@ -84,6 +84,14 @@ MainWindow::~MainWindow()
         delete this->jsApi;
 }
 
+void MainWindow::bringToFront()
+{
+    this->show();
+    this->setWindowState((this->windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);
+    this->raise();
+    this->activateWindow();
+}
+
 void MainWindow::closeEvent(QCloseEvent* event)
 {
     this->webView->closing();
