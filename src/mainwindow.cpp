@@ -50,6 +50,7 @@ MainWindow::MainWindow(QWidget* parent) :
     fontbox(0), fontsizebox(0)
 {
     this->ui->setupUi(this);
+    this->setWindowIcon(QIcon(":/app/lame.png"));
     this->resize(800, 640);
     QSettings settings;
     this->restoreGeometry(settings.value("window/geometry").toByteArray());

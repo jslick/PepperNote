@@ -31,7 +31,6 @@ Partial features:
   You can hand-edit the manifest to add or remove sections
 
 Features pending for v1.0 release:
-* Application icon
 * Format headings (h1, h2, h3, etc.)
 * Create notebooks
 * Re-arrange notebooks
@@ -39,3 +38,6 @@ Features pending for v1.0 release:
 * Re-arrange sections
 * Delete sections
 * Minimize to tray
+
+Also, need a new application icon to replace the existing hideous one.
+Seriously.

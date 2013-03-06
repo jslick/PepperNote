@@ -11,4 +11,7 @@
         <file alias="utility.js">res/editor/javascripts/utility.js</file>
         <file alias="page.js">res/editor/javascripts/page.js</file>
     </qresource>
+    <qresource prefix="/app">
+        <file alias="lame.png">res/lame.png</file>
+    </qresource>
 </RCC>
