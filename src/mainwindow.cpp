@@ -21,7 +21,9 @@
 #include <QStringBuilder>
 #include <QDir>
 #include <QSettings>
-#include <QDesktopServices>
+#if QT_VERSION < 0x050000
+#  include <QDesktopServices>
+#endif
 #include <QDockWidget>
 #include <QInputDialog>
 #include <QComboBox>
@@ -30,7 +32,11 @@
 
 QDir MainWindow::getNotebooksDirectory()
 {
+#if QT_VERSION >= 0x050000
+    QDir docsDir = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+#else
     QDir docsDir = QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation);
+#endif
     QDir notebooksDir = QString(docsDir.absolutePath() % '/' % QCoreApplication::applicationName() % " Notebooks");
     return notebooksDir;
 }

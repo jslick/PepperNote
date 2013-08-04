@@ -9,18 +9,24 @@
 
 #include <QtCore>
 
-class NotebookException : public QtConcurrent::Exception
+#if QT_VERSION >= 0x050000
+typedef QException ExceptionType;
+#else
+typedef QtConcurrent::Exception ExceptionType;
+#endif
+
+class NotebookException : public ExceptionType
 {
 public:
     NotebookException(const QString& message)
-        : QtConcurrent::Exception(),
+        : ExceptionType(),
           message(message)
     {}
 
     virtual ~NotebookException() throw() {}
 
     void raise() const { throw *this; }
-    Exception* clone() const { return new NotebookException(*this); }
+    ExceptionType* clone() const { return new NotebookException(*this); }
 
     QString message;
 };

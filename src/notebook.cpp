@@ -106,7 +106,7 @@ void Notebook::savePage(NotebookPage& page, const QString& html)
     {
         this->fileFormat->savePage(*this, page, html);
     }
-    catch (QtConcurrent::Exception& e)
+    catch (ExceptionType& e)
     {
         Q_UNUSED(e);
         throw NotebookException("Could not save page");

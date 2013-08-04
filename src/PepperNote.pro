@@ -11,6 +11,7 @@ win32:QMAKE_CXXFLAGS += -std=c++0x
 else:QMAKE_CXXFLAGS += -std=c++11
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += webkitwidgets
 
 TARGET = PepperNote
 TEMPLATE = app

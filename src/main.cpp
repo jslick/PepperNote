@@ -30,7 +30,11 @@ const QString APP_SINGLE_INSTANCE_NAME = APP_APPNAME + "-instance";
 static void writeSocket(QLocalSocket* socket, const QString& what)
 {
     if (!socket)
+#if QT_VERSION >= 0x050000
+        throw QException();
+#else
         throw QtConcurrent::Exception();
+#endif
 
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
