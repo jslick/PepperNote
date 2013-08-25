@@ -128,6 +128,13 @@ void MainWindow::initMenubar()
             );
     fileMenu->addAction(newPageAction);
 
+    fileMenu->addSeparator();
+    QAction* exitAction = new QAction(tr("E&xit"), this);
+    exitAction->setShortcut(QKeySequence::Quit);
+    connect(exitAction, SIGNAL(triggered()),
+            SLOT(close())
+            );
+    fileMenu->addAction(exitAction);
 }
 
 void MainWindow::initToolbar()
