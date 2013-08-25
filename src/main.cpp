@@ -108,6 +108,7 @@ QThread* startServer(QApplication& app, MainWindow& w)
 {
     SingleInstanceAppWorker* worker = new SingleInstanceAppWorker;
     QThread* thread = new QThread(&app);
+    thread->setObjectName("SingleInstanceServer");
     QObject::connect(thread, SIGNAL(started()),
                      worker, SLOT(listen())
                      );
@@ -174,6 +175,7 @@ int main(int argc, char *argv[])
     w.show();
     int rv = a.exec();
 
-    serverThread->quit();
+    if (serverThread)
+        serverThread->quit();
     return rv;
 }
