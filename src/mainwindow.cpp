@@ -108,6 +108,22 @@ void MainWindow::bringToFront()
     this->setFocus();
 }
 
+void MainWindow::changeEvent(QEvent* event)
+{
+    QMainWindow::changeEvent(event);
+
+    // Hide on minimize (if pref set)
+    if (event->type() == QEvent::WindowStateChange)
+    {
+        if (this->isMinimized())
+        {
+            QSettings settings;
+            if (settings.value("window/hide-on-minimize", false).toBool())
+                this->hide();
+        }
+    }
+}
+
 void MainWindow::closeEvent(QCloseEvent* event)
 {
     this->webView->closing();
