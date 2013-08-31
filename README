@@ -25,6 +25,7 @@ Existing features:
 * Delete pages
 * Create sections
 * Limit 1 running instance
+* Hide to system tray
 
 Partial features:
 * Multiple sections
@@ -37,7 +38,6 @@ Features pending for v1.0 release:
 * Rename sections
 * Re-arrange sections
 * Delete sections
-* Minimize to tray
 
 Also, need a new application icon to replace the existing hideous one.
 Seriously.

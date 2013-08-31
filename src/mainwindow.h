@@ -9,6 +9,8 @@
 
 #include <QMainWindow>
 
+#include <QSystemTrayIcon>
+
 class QDir;
 class QComboBox;
 class QFontComboBox;
@@ -24,10 +26,12 @@ namespace Ui {
 class MainWindow;
 }
 
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 private:
+
     static QDir getNotebooksDirectory();
     static QString getDefaultNotebookFilename();
 
@@ -111,8 +115,19 @@ private slots:
      */
     void updateFontControls(const QString& fontFamily, double fontSize);
 
+    /**
+     * @brief Handle tray activation event
+     *
+     * Shows or hides the main window when the tray icon is clicked
+     *
+     * @param reason
+     */
+    void handleTray(QSystemTrayIcon::ActivationReason reason);
+
 private:
-    Ui::MainWindow* ui;
+    Ui::MainWindow*     ui;
+    QSystemTrayIcon*    trayIcon;
+
     JavascriptApi*  jsApi;
     // NOTE:  The documentation lies.  It says that each note should have an
     //        instance of JavascriptApi... but there is only this one.

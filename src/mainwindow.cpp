@@ -50,14 +50,22 @@ QString MainWindow::getDefaultNotebookFilename()
 
 MainWindow::MainWindow(QWidget* parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow), jsApi(new JavascriptApi),
+    ui(new Ui::MainWindow), trayIcon(new QSystemTrayIcon(this)), jsApi(new JavascriptApi),
     fileMenu(0), webView(new NoteWebView(*this->jsApi)),
     notebookTree(new NotebookTree), notebookTreeDock(new QDockWidget),
     fontbox(0), fontsizebox(0)
 {
     this->ui->setupUi(this);
+
     this->setWindowIcon(QIcon(":/app/lame.png"));
+    this->trayIcon->setIcon(this->windowIcon());
+    this->trayIcon->show();
+    connect(this->trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
+            SLOT(handleTray(QSystemTrayIcon::ActivationReason))
+            );
+
     this->resize(800, 640);
+
     QSettings settings;
     this->restoreGeometry(settings.value("window/geometry").toByteArray());
     this->restoreState(settings.value("window/state").toByteArray());
@@ -97,6 +105,7 @@ void MainWindow::bringToFront()
     this->setWindowState((this->windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);
     this->raise();
     this->activateWindow();
+    this->setFocus();
 }
 
 void MainWindow::closeEvent(QCloseEvent* event)
@@ -107,6 +116,10 @@ void MainWindow::closeEvent(QCloseEvent* event)
     settings.setValue("window/state", this->saveState());
     this->showNormal();
     settings.setValue("window/geometry", this->saveGeometry());
+
+    // Hide tray icon so that app.exec() call returns
+    if (this->trayIcon)
+        this->trayIcon->hide();
 
     QMainWindow::closeEvent(event);
 }
@@ -458,4 +471,31 @@ void MainWindow::updateFontControls(const QString& fontFamily, double fontSize)
 
     // Re-enable font control connections
     QTimer::singleShot(0, this, SLOT(connectFontControls()));
+}
+
+void MainWindow::handleTray(QSystemTrayIcon::ActivationReason reason)
+{
+    switch (reason)
+    {
+    case QSystemTrayIcon::Trigger:
+        #ifdef Q_OS_LINUX
+        if (this->isVisible() && this->isActiveWindow())
+        #else   // Loses focus on tray click when running in Windows
+        if (this->isVisible())
+        #endif
+        {
+            this->hide();
+        }
+        else
+        {
+            this->show();
+            this->setWindowState((windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);    // necessary in Windows to raise window
+            this->activateWindow();
+        }
+        break;
+
+    default:
+        // errr.... nothing
+        break;
+    }
 }
