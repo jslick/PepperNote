@@ -126,6 +126,11 @@ private slots:
      */
     void handleTray(QSystemTrayIcon::ActivationReason reason);
 
+    /**
+     * @brief Show about dialog
+     */
+    void showAbout();
+
 private:
     Ui::MainWindow*     ui;
     QSystemTrayIcon*    trayIcon;
@@ -134,6 +139,7 @@ private:
     // NOTE:  The documentation lies.  It says that each note should have an
     //        instance of JavascriptApi... but there is only this one.
     QMenu*          fileMenu;
+    QMenu*          helpMenu;
     NoteWebView*    webView;
     NotebookTree*   notebookTree;
     QDockWidget*    notebookTreeDock;

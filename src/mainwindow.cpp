@@ -16,6 +16,7 @@
 #include "notebooktree.h"
 #include "treenotebookpageitem.h"
 #include "notewebview.h"
+#include "aboutdialog.h"
 
 #include <QtCore>
 #include <QStringBuilder>
@@ -29,6 +30,8 @@
 #include <QComboBox>
 #include <QFontComboBox>
 #include <QDoubleValidator>
+
+extern const QString APP_APPNAME;
 
 QDir MainWindow::getNotebooksDirectory()
 {
@@ -51,7 +54,7 @@ QString MainWindow::getDefaultNotebookFilename()
 MainWindow::MainWindow(QWidget* parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow), trayIcon(new QSystemTrayIcon(this)), jsApi(new JavascriptApi),
-    fileMenu(0), webView(new NoteWebView(*this->jsApi)),
+    fileMenu(0), helpMenu(0), webView(new NoteWebView(*this->jsApi)),
     notebookTree(new NotebookTree), notebookTreeDock(new QDockWidget),
     fontbox(0), fontsizebox(0)
 {
@@ -93,10 +96,8 @@ MainWindow::~MainWindow()
     while (this->loadedNotebooks.isEmpty() == false)
         delete this->loadedNotebooks.takeLast();
 
-    delete ui;
-
-    if (this->jsApi)
-        delete this->jsApi;
+    delete this->jsApi;
+    delete this->ui;
 }
 
 void MainWindow::bringToFront()
@@ -164,6 +165,14 @@ void MainWindow::initMenubar()
             SLOT(close())
             );
     fileMenu->addAction(exitAction);
+
+    this->helpMenu = menuBar()->addMenu(tr("&Help"));
+
+    QAction* aboutAction = new QAction(tr("About %1").arg(APP_APPNAME), this);
+    connect(aboutAction, SIGNAL(triggered()),
+            SLOT(showAbout())
+            );
+    helpMenu->addAction(aboutAction);
 }
 
 void MainWindow::initToolbar()
@@ -514,4 +523,16 @@ void MainWindow::handleTray(QSystemTrayIcon::ActivationReason reason)
         // errr.... nothing
         break;
     }
+}
+
+void MainWindow::showAbout()
+{
+    static QPointer<AboutDialog> dlg;
+    if (!dlg)
+        dlg = new AboutDialog(this);
+
+    dlg->setAttribute(Qt::WA_DeleteOnClose);
+    dlg->show();
+    dlg->raise();
+    dlg->activateWindow();
 }

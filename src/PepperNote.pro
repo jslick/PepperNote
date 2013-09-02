@@ -19,39 +19,42 @@ TEMPLATE = app
 INCLUDEPATH += ../contrib/qt-json/
 
 SOURCES += main.cpp \
-        mainwindow.cpp \
-        notewebview.cpp \
-        javascriptapi.cpp \
-        notebook.cpp \
-        notebookpage.cpp \
-        notebookformat.cpp \
-        notebookmanager.cpp \
-        notebookformatmanifest.cpp \
-        filenotebookformat.cpp \
-        notebooktree.cpp \
-        treenotebookitem.cpp \
-        treenotebookpageitem.cpp \
-        lambdaguard.cpp \
-        ../contrib/qt-json/json.cpp
+    mainwindow.cpp \
+    aboutdialog.cpp \
+    notewebview.cpp \
+    javascriptapi.cpp \
+    notebook.cpp \
+    notebookpage.cpp \
+    notebookformat.cpp \
+    notebookmanager.cpp \
+    notebookformatmanifest.cpp \
+    filenotebookformat.cpp \
+    notebooktree.cpp \
+    treenotebookitem.cpp \
+    treenotebookpageitem.cpp \
+    lambdaguard.cpp \
+    ../contrib/qt-json/json.cpp
 
 HEADERS  += mainwindow.h \
-        utility.h \
-        notewebview.h \
-        javascriptapi.h \
-        notebook.h \
-        notebookpage.h \
-        notebookformat.h \
-        notebookmanager.h \
-        notebookformatmanifest.h \
-        filenotebookformat.h \
-        notebooktree.h \
-        treenotebookitem.h \
-        treenotebookpageitem.h \
-        notebookexception.h \
-        lambdaguard.h \
-        ../contrib/qt-json/json.h
+    aboutdialog.h \
+    utility.h \
+    notewebview.h \
+    javascriptapi.h \
+    notebook.h \
+    notebookpage.h \
+    notebookformat.h \
+    notebookmanager.h \
+    notebookformatmanifest.h \
+    filenotebookformat.h \
+    notebooktree.h \
+    treenotebookitem.h \
+    treenotebookpageitem.h \
+    notebookexception.h \
+    lambdaguard.h \
+    ../contrib/qt-json/json.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    aboutdialog.ui
 
 RESOURCES += \
     notes.qrc

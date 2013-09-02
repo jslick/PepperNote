@@ -13,8 +13,8 @@
 #include <QLocalServer>
 #include <QLocalSocket>
 
-const QString APP_ORGNAME = "PepperNote";
-const QString APP_APPNAME = "PepperNote";
+extern const QString APP_ORGNAME = "PepperNote";
+extern const QString APP_APPNAME = "PepperNote";
 
 const QString APP_SINGLE_INSTANCE_NAME = APP_APPNAME + "-instance";
 // TODO:  Not compatible for mulitple users --^
