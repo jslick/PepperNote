@@ -209,7 +209,7 @@ void MainWindow::initToolbar()
         QWebPage::NoWebAction, /* separator */
         QWebPage::InsertOrderedList, QWebPage::InsertUnorderedList,
         QWebPage::Outdent, QWebPage::Indent,
-        QWebPage::RemoveFormat
+        QWebPage::RemoveFormat,
     };
     const QString ACTION_STD_ICONS[] =
     {
@@ -218,8 +218,11 @@ void MainWindow::initToolbar()
         "",
         "format-list-ordered", "format-list-unordered",
         "format-indent-less", "format-indent-more",
-        "edit-clear-list"
+        "edit-clear-list",
     };
+    constexpr size_t ACTION_LENGTH = sizeof(ACTIONS) / sizeof(ACTIONS[0]);
+    constexpr size_t ACTION_ICON_LENGTH = sizeof(ACTION_STD_ICONS) / sizeof(ACTION_STD_ICONS[0]);
+    static_assert(ACTION_LENGTH == ACTION_ICON_LENGTH, "ACTIONS and ACTION_STD_ICONS should contain the same number of items");
 
     for (size_t i = 0; i < sizeof(ACTIONS) / sizeof(QWebPage::WebAction); i++)
     {
