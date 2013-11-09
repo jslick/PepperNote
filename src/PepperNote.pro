@@ -7,8 +7,13 @@
 QT       += core gui
 QT       += webkit
 QT       += network
-win32:QMAKE_CXXFLAGS += -std=c++0x
-else:QMAKE_CXXFLAGS += -std=c++11
+greaterThan(QT_MAJOR_VERSION, 4) {
+    CONFIG += c++11
+}
+else {
+    win32:QMAKE_CXXFLAGS += -std=c++0x
+    else:QMAKE_CXXFLAGS += -std=c++11
+}
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 greaterThan(QT_MAJOR_VERSION, 4): QT += webkitwidgets
