@@ -115,7 +115,7 @@ QTreeWidgetItem& TreeNotebookItem::findOrCreateSectionItem(const QString& sectio
             return *sectionItem;
     }
 
-    QTreeWidgetItem* sectionItem = new QTreeWidgetItem;
+    QTreeWidgetItem* sectionItem = new QTreeWidgetItem(SECTION_TREE_TYPE);
     sectionItem->setText(0, sectionName);
     this->addChild(sectionItem);
 
