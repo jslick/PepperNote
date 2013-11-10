@@ -19,7 +19,7 @@ TreeNotebookItem::TreeNotebookItem(Notebook& notebook) :
 
     for (const QString& sectionName : notebook.getSectionNames())
     {
-        QTreeWidgetItem* sectionItem = new QTreeWidgetItem;
+        QTreeWidgetItem* sectionItem = new QTreeWidgetItem(SECTION_TREE_TYPE);
         sectionItem->setText(0, sectionName);
         this->addChild(sectionItem);
 
@@ -35,6 +35,10 @@ TreeNotebookItem::TreeNotebookItem(Notebook& notebook) :
             );
     connect(&this->notebook, SIGNAL(pageRemoved(QString,NotebookPage*)),
             SLOT(removePageItem(QString,NotebookPage*))
+            );
+
+    connect(&this->notebook, SIGNAL(sectionRenamed(QString,QString)),
+            SLOT(renameSection(QString,QString))
             );
 }
 
@@ -87,6 +91,17 @@ void TreeNotebookItem::removePageItem(QString sectionName, NotebookPage* page)
     Q_ASSERT(pageNode);
 
     sectionTree->removeChild(pageNode);
+}
+
+void TreeNotebookItem::renameSection(QString oldName, QString newName)
+{
+    // NOTE:  non-recursive; doesn't support nested sections
+    for (int i = 0; i < this->childCount(); i++)
+    {
+        QTreeWidgetItem* item = this->child(i);
+        if (item && item->type() == SECTION_TREE_TYPE && item->text(0) == oldName)
+            item->setText(0, newName);
+    }
 }
 
 QTreeWidgetItem& TreeNotebookItem::findOrCreateSectionItem(const QString& sectionName)

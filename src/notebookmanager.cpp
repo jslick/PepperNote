@@ -42,6 +42,9 @@ void NotebookManager::loadNotebook(const QString& filename)
     connect(notebook, SIGNAL(pageRemoved(QString,NotebookPage*)),
             fileFormat, SLOT(saveManifest())
             );
+    connect(notebook, SIGNAL(sectionRenamed(QString,QString)),
+            fileFormat, SLOT(saveManifest())
+            );
 
     emit notebookLoaded(notebook);
 }

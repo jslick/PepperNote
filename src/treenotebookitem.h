@@ -13,6 +13,8 @@ class Notebook;
 class NotebookPage;
 class TreeNotebookPageItem;
 
+static const int SECTION_TREE_TYPE = QTreeWidgetItem::ItemType::UserType + 1; //< indicates that a QTreeWidgetItem is a section item
+
 /**
  * @brief A QTreeWidgetItem for notebooks (top-level) in the notebook tree
  *
@@ -57,6 +59,9 @@ private slots:
 
     // Remove items when they are removed from the Notebook
     void removePageItem(QString sectionName, NotebookPage* page);
+
+    // Renames section items when they are renamed in the Notebook
+    void renameSection(QString oldName, QString newName);
 
 private:
 

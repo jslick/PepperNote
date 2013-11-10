@@ -108,11 +108,23 @@ public:
      */
     void removePage(const QString& sectionName, NotebookPage& page);
 
+    /**
+     * @brief Rename a section
+     *
+     * @param oldName
+     * @param newName
+     *
+     * @return Success or failure
+     */
+    bool renameSection(const QString& oldName, const QString& newName);
+
 signals:
 
     void pageAdded(QString section, NotebookPage* page);
     void pageMoved(NotebookPage* page, QString sectionName, int index);
     void pageRemoved(QString section, NotebookPage* page);
+
+    void sectionRenamed(QString oldName, QString newName);
 
 public slots:
 

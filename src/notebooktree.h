@@ -38,6 +38,7 @@ protected:
 
 private slots:
 
+    void renameSection();
     void movePageUp();
     void movePageDown();
     void movePageToSection(QAction* action);
@@ -57,6 +58,9 @@ private:
     QHash<Notebook*,TreeNotebookItem*> notebookTreeItems;
 
     // Context menu stuff
+    QMenu       sectionContextMenu;
+    QAction*    renameSectionAction;
+
     QMenu       pageContextMenu;
     QAction*    movePageUpAction;
     QAction*    movePageDownAction;

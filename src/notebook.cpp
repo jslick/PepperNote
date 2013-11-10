@@ -162,6 +162,21 @@ void Notebook::removePage(const QString& sectionName, NotebookPage& page)
     emit pageRemoved(sectionName, &page);
 }
 
+bool Notebook::renameSection(const QString& oldName, const QString& newName)
+{
+    // NOTE:  Data model should be changed to give unique IDs to sections
+
+    Section* section = this->findSection(oldName);
+    if (!section)
+        return false;
+
+    section->name = newName;
+
+    emit sectionRenamed(oldName, newName);
+
+    return true;
+}
+
 Notebook::Section* Notebook::findSection(const QString& sectionName)
 {
     for (Section& section: this->sections)

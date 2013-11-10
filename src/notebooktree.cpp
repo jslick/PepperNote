@@ -12,11 +12,13 @@
 #include "treenotebookitem.h"
 #include "treenotebookpageitem.h"
 #include "notebookexception.h"
+#include "utility.h"
 
 #include <QHeaderView>
 #include <QMenu>
 #include <QContextMenuEvent>
 #include <QMessageBox>
+#include <QInputDialog>
 
 class MoveToSectionAction : public QAction
 {
@@ -39,6 +41,12 @@ NotebookTree::NotebookTree(QWidget* parent) :
 {
     this->setColumnCount(1);
     this->header()->hide();
+
+    this->renameSectionAction = new QAction(QObject::tr("Rename Section..."), this);
+    this->sectionContextMenu.addAction(this->renameSectionAction);
+    connect(this->renameSectionAction, SIGNAL(triggered()),
+            SLOT(renameSection())
+            );
 
     this->movePageUpAction = new QAction(QObject::tr("Move Up"), this);
     this->movePageDownAction = new QAction(QObject::tr("Move Down"), this);
@@ -110,36 +118,77 @@ void NotebookTree::selectPage(Notebook* notebook, NotebookPage* page)
 void NotebookTree::contextMenuEvent(QContextMenuEvent* event)
 {
     QList<QTreeWidgetItem*> selectedList = this->selectedItems();
-    if (selectedList.length() >= 1)
+    if (selectedList.length() < 1)
+        return QTreeWidget::contextMenuEvent(event);
+
+    QTreeWidgetItem* selected = selectedList.at(0);
+    if (TreeNotebookPageItem* selectedPageItem = dynamic_cast<TreeNotebookPageItem*>( selected ))
     {
-        QTreeWidgetItem* selected = selectedList.at(0);
-        if (TreeNotebookPageItem* selectedPageItem = dynamic_cast<TreeNotebookPageItem*>( selected ))
+        // Disable actions on boundaries
+        QTreeWidgetItem* selectedParent = selected->parent();
+        Q_ASSERT(selectedParent);
+
+        Notebook& notebook = selectedPageItem->getNotebook();
+        NotebookPage& notebookPage = selectedPageItem->getNotebookPage();
+
+        int index = selectedParent->indexOfChild(selected);
+        this->movePageUpAction->setEnabled(index > 0);
+        this->movePageDownAction->setEnabled(index < selectedParent->childCount() - 1);
+
+        // Populate Move to Section menu
+        this->moveToSectionMenu.clear();
+        QStringList sectionNames = notebook.getSectionNames();
+        for (const QString& sectionName : sectionNames)
         {
-            // Disable actions on boundaries
-            QTreeWidgetItem* selectedParent = selected->parent();
-            Q_ASSERT(selectedParent);
-
-            Notebook& notebook = selectedPageItem->getNotebook();
-            NotebookPage& notebookPage = selectedPageItem->getNotebookPage();
-
-            int index = selectedParent->indexOfChild(selected);
-            this->movePageUpAction->setEnabled(index > 0);
-            this->movePageDownAction->setEnabled(index < selectedParent->childCount() - 1);
-
-            // Populate Move to Section menu
-            this->moveToSectionMenu.clear();
-            QStringList sectionNames = notebook.getSectionNames();
-            for (const QString& sectionName : sectionNames)
-            {
-                MoveToSectionAction* action = new MoveToSectionAction(notebook, sectionName, notebookPage);
-                this->moveToSectionMenu.addAction(action);
-            }
-
-            this->pageContextMenu.exec(event->globalPos());
+            MoveToSectionAction* action = new MoveToSectionAction(notebook, sectionName, notebookPage);
+            this->moveToSectionMenu.addAction(action);
         }
+
+        this->pageContextMenu.exec(event->globalPos());
+    }
+    else if (selected->type() == SECTION_TREE_TYPE)
+    {
+        this->sectionContextMenu.exec(event->globalPos());
     }
 
     QTreeWidget::contextMenuEvent(event);
+}
+
+void NotebookTree::renameSection()
+{
+    QList<QTreeWidgetItem*> selectedList = this->selectedItems();
+    if (selectedList.length() < 0)
+        return;
+
+    QTreeWidgetItem* selected = selectedList.at(0);
+    if (!selected || selected->type() != SECTION_TREE_TYPE)
+        return;
+
+    QTreeWidgetItem* selectedParent = selected->parent();
+    TreeNotebookItem* notebookItem = dynamic_cast<TreeNotebookItem*>( selectedParent );
+    if (!notebookItem)
+        return;
+
+    QString sectionName;
+    do
+    {
+        sectionName = QInputDialog::getText(
+                    this, tr("Rename Section"),
+                    tr("New name of section:")
+                    );
+
+        if (sectionName.isEmpty())
+            return;
+
+        bool alreadyExists = notebookItem->notebook.getSectionNames().contains(sectionName);
+        if (alreadyExists)
+            showMessage(tr("A section of that name already exists"));
+        else
+            break;
+    }
+    while (true);
+
+    notebookItem->notebook.renameSection(selected->text(0), sectionName);
 }
 
 void NotebookTree::movePageUp()
