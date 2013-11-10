@@ -42,8 +42,8 @@ signals:
 public slots:
 
 private:
-    QString     pageId;
-    QString     pageName;
+    QString pageId;
+    QString pageName;
 };
 
 #endif // NOTEBOOKPAGE_H

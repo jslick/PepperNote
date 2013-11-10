@@ -65,15 +65,14 @@ NotebookTree::NotebookTree(QWidget* parent) :
 
 void NotebookTree::addNotebook(Notebook& notebook)
 {
-    TreeNotebookItem* treeItem = new TreeNotebookItem(notebook);
     if (this->notebookTreeItems.find(&notebook) == this->notebookTreeItems.end())
     {
+        TreeNotebookItem* treeItem = new TreeNotebookItem(notebook);
         this->notebookTreeItems[&notebook] = treeItem;
         this->addTopLevelItem(treeItem);
     }
     else
     {
-        delete treeItem;
         throw NotebookException("Cannot add a notebook multiple times to the tree");
     }
 }
@@ -189,7 +188,6 @@ void NotebookTree::deletePageConfirmation()
 
 void NotebookTree::movePage(NotebookTree::MovePageDirection direction)
 {
-
     QList<QTreeWidgetItem*> selectedList = this->selectedItems();
     if (selectedList.length() >= 1)
     {

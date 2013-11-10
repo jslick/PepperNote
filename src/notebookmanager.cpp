@@ -29,9 +29,19 @@ void NotebookManager::loadNotebook(const QString& filename)
     QMutexLocker locker(&this->loadQueueMutex);
     QString loadFilename = this->loadQueue.dequeue();
 
-    NotebookFormat* fileFormat = new FileNotebookFormat(loadFilename);
+    FileNotebookFormat* fileFormat = new FileNotebookFormat(loadFilename);
     Notebook* notebook = new Notebook(fileFormat);
     fileFormat->load(); // load metadata
+
+    connect(notebook, SIGNAL(pageAdded(QString,NotebookPage*)),
+            fileFormat, SLOT(saveManifest())
+            );
+    connect(notebook, SIGNAL(pageMoved(NotebookPage*,QString,int)),
+            fileFormat, SLOT(saveManifest())
+            );
+    connect(notebook, SIGNAL(pageRemoved(QString,NotebookPage*)),
+            fileFormat, SLOT(saveManifest())
+            );
 
     emit notebookLoaded(notebook);
 }

@@ -77,6 +77,7 @@ void TreeNotebookItem::updatePageItem(NotebookPage* page, QString sectionName, i
 
 void TreeNotebookItem::removePageItem(QString sectionName, NotebookPage* page)
 {
+    Q_UNUSED(sectionName);
     Q_ASSERT(page);
 
     QTreeWidgetItem* sectionTree = 0;

@@ -12,6 +12,7 @@
 
 #include <QStringBuilder>
 #include <QDir>
+#include <json.h>
 
 FileNotebookFormat::FileNotebookFormat(const QString& filename, Notebook* parent) :
     NotebookFormat(parent),
@@ -21,38 +22,53 @@ FileNotebookFormat::FileNotebookFormat(const QString& filename, Notebook* parent
 
 void FileNotebookFormat::load()
 {
-    QString manifestJson = getFileUtf8(this->filename % "/manifest.json");
-    this->manifest.parseJson(manifestJson);
+    // Load page and section information from manifest JSON
+    const QString manifestJson = getFileUtf8(this->filename % "/manifest.json");
+    bool ok;
+    QVariantMap result = QtJson::parse(manifestJson, ok).toMap();
+    if (!ok)
+        throw NotebookException("Unable to parse manifest");
 
-    for (const QString& sectionName : this->manifest.getSectionNames())
+    // Index page names
+    QHash<QString,QString> pageNameIndex; // maps page id <=> page name
+    const QVariantList pagesList = result["pages"].toList();
+    for (const QVariant& pageMapVariant : pagesList)
     {
-        typedef QPair<QString,QString> PageInfo;
+        const QVariantMap pageMap = pageMapVariant.toMap();
 
-        QList<PageInfo> pageInfos;
-        this->manifest.getPages(sectionName, pageInfos);
+        const QString& pageId = pageMap["id"].toString();
+        const QString& pageName = pageMap["name"].toString();
+        if (pageId.length())
+            pageNameIndex[pageId] = pageName;
+    }
 
-        for (const PageInfo& pageInfo : pageInfos)
+    // Find the actual pages in the manifest, and add them to the notebook
+    const QVariantList sectionsList = result["sections"].toList();
+    for (const QVariant& sectionMapVariant : sectionsList)
+    {
+        const QVariantMap sectionMap = sectionMapVariant.toMap();
+
+        const QString& sectionName = sectionMap["name"].toString();
+        const QStringList sectionPageList = sectionMap["pages"].toStringList();
+
+        for (const QString& pageId : sectionPageList)
         {
-            NotebookPage* page = new NotebookPage(pageInfo.first, pageInfo.second);
-            this->notebook->addPage(sectionName, page);
+            const QString& pageName = pageNameIndex[pageId];
+            if (pageName.length())
+            {
+                NotebookPage* page = new NotebookPage(pageId, pageName);
+                this->notebook->addPage(sectionName, page);
+            }
+            else
+                qDebug() << "While loading the notebook manifest:  Page does not have a name";
         }
     }
-}
-
-QStringList FileNotebookFormat::getSectionNames() const
-{
-    return this->manifest.getSectionNames();
 }
 
 bool FileNotebookFormat::isPagePersisted(const QString& pageId) const
 {
     QString pageFilename = this->getPageFilename(pageId);
     return QFile::exists(pageFilename);
-}
-
-QString FileNotebookFormat::getPageId(int sectionIndex, int pageIndex) const
-{
-    return this->manifest.getPageId(sectionIndex, pageIndex);
 }
 
 QString FileNotebookFormat::getPageContents(const QString& pageId) const
@@ -70,6 +86,8 @@ QString FileNotebookFormat::getPageContents(const QString& pageId) const
 
 void FileNotebookFormat::savePage(Notebook& notebook, NotebookPage& page, const QString& html)
 {
+    Q_UNUSED(notebook);
+
     QDir notebookDir(this->filename);
     if (notebookDir.exists() == false)
         notebookDir.mkpath(".");
@@ -93,44 +111,14 @@ void FileNotebookFormat::savePage(Notebook& notebook, NotebookPage& page, const 
     qint64 numWritten = pageFile.write(html.toUtf8());
     Q_UNUSED(numWritten);
 
-    // If the page is not yet persisted, add it to the manifest, and save the
-    // manifest.
-    if (!this->manifest.containsPage(page.getId()))
-    {
-        this->manifest.addPage(notebook.getPageSection(page), page.getId(), page.getName());
-        this->saveManifest();
-    }
-    // Check to see if page name needs to be updated in manifest
-    else if (this->manifest.getPageName(page.getId()) != page.getName())
-    {
-        this->manifest.setPageName(page.getId(), page.getName());
-        this->saveManifest();
-    }
+    this->saveManifest();
 
     pageFile.close();
 }
 
-void FileNotebookFormat::movePage(NotebookPage& page, int places)
-{
-    this->manifest.movePage(page.getId(), places);
-    this->saveManifest();
-}
-
-void FileNotebookFormat::movePageToSection(NotebookPage& page, const QString& sectionName)
-{
-    this->manifest.movePageToSection(page.getId(), sectionName);
-    this->saveManifest();
-}
-
-void FileNotebookFormat::removePage(const QString& sectionName, NotebookPage& page)
-{
-    this->manifest.removePage(sectionName, page.getId());
-    this->saveManifest();
-}
-
 void FileNotebookFormat::saveManifest()
 {
-    const QString serializedManifest = this->manifest.serialize();
+    const QString serializedManifest = this->serializeManifest();
 
     QString manifestFilename = this->filename % "/manifest.json";
     QFile manifestFile(manifestFilename);
@@ -149,4 +137,36 @@ QString FileNotebookFormat::getPageFilename(const QString& pageId) const
     QDir pagesDir = QDir(this->filename % "/pages");
     QString pageFilename = pagesDir.path() % '/' % pageId % ".html";
     return pageFilename;
+}
+
+QString FileNotebookFormat::serializeManifest() const
+{
+    QVariantList pagesList;
+    QVariantList sectionsList;
+
+    for (const QString& sectionName : this->notebook->getSectionNames())
+    {
+        QVariantList sectionPagesList;
+
+        for (NotebookPage* page : this->notebook->getPages(sectionName))
+        {
+            QVariantMap pageMap;
+            pageMap["id"] = page->getId();
+            pageMap["name"] = page->getName();
+            pagesList.append(pageMap);
+
+            sectionPagesList.append(page->getId());
+        }
+
+        QVariantMap sectionMap;
+        sectionMap["name"] = sectionName;
+        sectionMap["pages"] = sectionPagesList;
+        sectionsList.append(sectionMap);
+    }
+
+    QVariantMap top;
+    top["pages"] = pagesList;
+    top["sections"] = sectionsList;
+
+    return QtJson::serialize(top);
 }

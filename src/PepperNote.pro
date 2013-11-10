@@ -32,7 +32,6 @@ SOURCES += main.cpp \
     notebookpage.cpp \
     notebookformat.cpp \
     notebookmanager.cpp \
-    notebookformatmanifest.cpp \
     filenotebookformat.cpp \
     notebooktree.cpp \
     treenotebookitem.cpp \
@@ -49,7 +48,6 @@ HEADERS  += mainwindow.h \
     notebookpage.h \
     notebookformat.h \
     notebookmanager.h \
-    notebookformatmanifest.h \
     filenotebookformat.h \
     notebooktree.h \
     treenotebookitem.h \

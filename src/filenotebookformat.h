@@ -8,11 +8,8 @@
 #define FILENOTEBOOKFORMAT_H
 
 #include "notebookformat.h"
-#include "notebookformatmanifest.h"
 
 #include <QObject>
-
-class NotebookFormat;
 
 /**
  * @brief A baseline NotebookFormat implementation
@@ -55,33 +52,24 @@ public:
 
     virtual void load();
 
-    virtual QStringList getSectionNames() const;
-
     virtual bool isPagePersisted(const QString& pageId) const;
-
-    virtual QString getPageId(int sectionIndex, int pageIndex) const;
 
     virtual QString getPageContents(const QString& pageId) const;
 
     virtual void savePage(Notebook& notebook, NotebookPage& page, const QString& html);
 
-    virtual void movePage(NotebookPage& page, int places);
-
-    virtual void movePageToSection(NotebookPage& page, const QString& sectionName);
-
-    virtual void removePage(const QString& sectionName, NotebookPage& page);
-
-    void saveManifest();
-
 signals:
 
 public slots:
 
+    void saveManifest();
+
 private:
     QString getPageFilename(const QString& pageId) const;
 
+    QString serializeManifest() const;
+
     QString filename;
-    NotebookFormatManifest manifest;
 };
 
 #endif // FILENOTEBOOKFORMAT_H

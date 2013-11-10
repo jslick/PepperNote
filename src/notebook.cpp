@@ -31,8 +31,7 @@ Notebook::~Notebook()
         }
     }
 
-    if (this->fileFormat)
-        delete this->fileFormat;
+    delete this->fileFormat;
 }
 
 bool Notebook::isPagePersisted(const QString& pageId) const
@@ -131,8 +130,6 @@ void Notebook::movePage(NotebookPage& page, int places)
                 newIndex = 0;
             section.pages.move(index, newIndex);
 
-            this->fileFormat->movePage(page, places);
-
             emit pageMoved(&page, section.name, newIndex);
             return;
         }
@@ -151,9 +148,6 @@ void Notebook::movePageToSection(NotebookPage& page, const QString& sectionName)
 
     newSection->pages.append(&page);
 
-    if (this->fileFormat->isPagePersisted(page.getId()))
-        this->fileFormat->movePageToSection(page, sectionName);
-
     emit pageMoved(&page, sectionName, newSection->pages.length() - 1);
 }
 
@@ -164,8 +158,6 @@ void Notebook::removePage(const QString& sectionName, NotebookPage& page)
         throw NotebookException("Cannot remove page from section:  Section not found");
 
     section->pages.removeAll(&page);
-
-    this->fileFormat->removePage(sectionName, page);
 
     emit pageRemoved(sectionName, &page);
 }

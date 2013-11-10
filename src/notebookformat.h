@@ -52,13 +52,6 @@ public:
     virtual void load() = 0;
 
     /**
-     * @brief Get the names of all sections, in stored order
-     *
-     * @return The names of all sections, in stored order
-     */
-    virtual QStringList getSectionNames() const = 0;
-
-    /**
      * @brief Checks to see if the given page is committed
      *
      * @param pageId    The UUID of the page
@@ -78,19 +71,6 @@ public:
     virtual QString getPageContents(const QString& pageId) const = 0;
 
     /**
-     * @brief Get the page ID of the page at the given ith section, and jth page
-     *        within that section
-     *
-     * @pre sectionIndex and pageIndex are in-bounds (there exists an ith
-     *      section, and a jth page within that section).
-     * @param sectionIndex  The index of the section
-     * @param pageIndex     The index of the page _within_ the section
-     *
-     * @return The UUID of the page
-     */
-    virtual QString getPageId(int sectionIndex, int pageIndex) const = 0;
-
-    /**
      * @brief Save a Notebook page to disk
      *
      * @param notebook  The Notebook that the page belongs to
@@ -100,31 +80,6 @@ public:
      * @note The page can be new or persisted.
      */
     virtual void savePage(Notebook& notebook, NotebookPage& page, const QString& html) = 0;
-
-    /**
-     * @brief Reorder a page within its section in the notebook
-     *
-     * @param page      The page to move
-     * @param places    The number of places to move.  Negative value to move up.
-     * @pre `places` should move the page to a valid index.
-     */
-    virtual void movePage(NotebookPage& page, int places) = 0;
-
-    /**
-     * @brief Move a page to another section in a notebook
-     *
-     * @param page
-     * @param sectionName
-     */
-    virtual void movePageToSection(NotebookPage& page, const QString& sectionName) = 0;
-
-    /**
-     * @brief Remove a page a section
-     *
-     * @param sectionName
-     * @param page
-     */
-    virtual void removePage(const QString& sectionName, NotebookPage& page) = 0;
 
 signals:
 
